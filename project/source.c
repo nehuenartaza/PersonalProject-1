@@ -28,7 +28,7 @@ float damageDealedToEnemy(int weaponDamage, float damageMultiplier, int enemysDe
     return damageDealed;
 }
 
-float criticalStrike(float damageDealed, float luck)    //mejorar en base a la suerte
+float criticalStrike(float damageDealed, float luck)
 {
     float criticalStrikeChance = 8.0;
     int pool = rand () % 100;
@@ -96,12 +96,7 @@ void showInitialStats(playerUser player)
     case 4:
         printf ( "Difficulty: 'POSTAL Difficulty'\n" );
     }
-    if ( player.amountTraits != 0 ) {
-        printf ( "Traits selected:\n" );
-        for ( int i = 0; i < player.amountTraits; i++ ) {
-            printf ( "%s\n", player.traits[i]);
-        }
-    }
+    showPlayerTraits(player.traits, player.amountTraits);
 }
 
 void showAllStats(playerUser player)
@@ -116,31 +111,8 @@ void showAllStats(playerUser player)
     printf ( "Final DEF: %d", player.defense );
     printf ( "Final Luck: x%.1f\n", player.luck );
     printf ( "Final Inventory: %d items\n", player.amountItems );
-    if ( player.amountItems != 0 ) {
-        for ( int i = 0; i < player.amountItems; i++ ) {
-            if ( player.inventory[i].itemIsDiscard == false ) {
-                printf ( "Item: '%s' ", player.inventory[i].name);
-                if ( player.inventory[i].isItem ) {
-                    printf ( "(Utility)\n" );
-                    printf ( "modifier DEF: %d\n", player.inventory[i].defenseBonus );
-                    printf ( "restores: %d life\n", player.inventory[i].lifeHealPoints );
-                    printf ( "luck: %.2f\n", player.inventory[i].luckBonus );
-                    printf ( "+%d score having this item when run finished\n\n", player.inventory[i].scoreBonus );
-                }
-                if ( player.inventory[i].isWeapon ) {
-                    printf ( "(Weapon)\n" );
-                    printf ( "DMG: %d\n", player.inventory[i].weaponDMG );
-                    printf ( "Block-Chance: %d\n\n", player.inventory[i].blockChance );
-                }
-            }
-        }
-    }
-    printf ( "Traits selected: %d\n", player.amountTraits );
-    if ( player.amountTraits != 0 ) {
-        for ( int i = 0; i < player.amountTraits; i++ ) {
-            printf ( "%s\n", player.traits[i]);
-        }
-    }
+    showPlayerInventory(player.inventory, player.amountItems);
+    showPlayerTraits(player.traits, player.amountTraits);
     switch ( player.difficulty ) {
     case 1:
         printf ( "Difficulty: 'easy modo'\n" );
@@ -205,9 +177,55 @@ float convertDifValueToMultiplier(int difficulty)
     return difficultyDebuff;
 }
 
+void showPlayerTraits(traitUser traits[], int total)
+{
+    if ( total != 0 ) {
+        printf ( "Traits selected:\n" );
+        for ( int i = 0; i < total; i++ ) {
+            printf ( "'%s' | ", traits[i].name);
+            if ( traits[i].isPositive ) {
+                printf ( "(Positive)\n" );
+            } else {
+                    printf ( "(Negative)\n" );
+                }
+            if ( traits[i].defenseBuff != 0 ) {
+                printf ( "DEF: %d\n", traits[i].defenseBuff );
+            }
+            if ( traits[i].DMGBuff != 0 ) {
+                printf ( "DMG: %.2f\n", traits[i].DMGBuff );
+            }
+            if ( traits[i].hpMultiplierBuff != 0 ) {
+                printf ( "hpMultiplier: %.2f", traits[i].hpMultiplierBuff );
+            }
+            if ( traits[i].luckBuff != 0 ) {
+                printf ( "luck modifier: %.2f", traits[i].luckBuff );
+            }
+        }
+    }
+}
 
-
-
+void showPlayerInventory(itemUser inventory[], int total)
+{
+    if ( total != 0 ) {
+        for ( int i = 0; i < total; i++ ) {
+            if ( inventory[i].itemIsDiscard == false ) {
+                printf ( "Item: '%s' ", inventory[i].name);
+                if ( inventory[i].isItem ) {
+                    printf ( "(Utility)\n" );
+                    printf ( "modifier DEF: %d\n", inventory[i].defenseBonus );
+                    printf ( "restores: %d life\n", inventory[i].lifeHealPoints );
+                    printf ( "luck: %.2f\n", inventory[i].luckBonus );
+                    printf ( "+%d score having this item when run finished\n\n", inventory[i].scoreBonus );
+                }
+                if ( inventory[i].isWeapon ) {
+                    printf ( "(Weapon)\n" );
+                    printf ( "DMG: %d\n", inventory[i].weaponDMG );
+                    printf ( "Block-Chance: %d\n\n", inventory[i].blockChance );
+                }
+            }
+        }
+    }
+}
 
 
 void showActions()
@@ -221,11 +239,56 @@ void showActions()
     printf ( "Answer..." );
 }
 
-void drawMenu()
+void mainMenu()
 {
-    printf ( "1- Play\n");
-    printf ( "2- Basics\n");
-    printf ( "3- Credits\n");
-    printf ( "0- Salir\n");
-    printf ( "opcion...");
+    int input = 1;
+    do {
+        printf ( "1- Play\n");
+        printf ( "2- Basics\n");
+        printf ( "3- Credits\n");
+        printf ( "0- Salir\n");
+        printf ( "opcion...");
+        scanf ( "%d", &input );
+        switch ( input ) {
+        case 1:
+            system("cls");
+
+            break;
+        case 2:
+            system("cls");
+
+            break;
+        case 3:
+            system("cls");
+
+            break;
+        }
+        system("cls");
+    } while ( input != 0 );
+}
+
+void playMenu()
+{
+    int input = 1;
+    do {
+        printf ( "1- New Run\n" );
+        printf ( "2- Print history\n" );
+        printf ( "3- Print player with HiScore\n" );
+        printf ( "0- Return\n" );
+        switch ( input ) {
+        case 1:
+            system("cls");
+            //menu de new run
+            break;
+        case 2:
+            system("cls");
+            //history print
+            break;
+        case 3:
+            system("cls");
+            //HiScore print
+            break;
+        }
+        system("cls");
+    } while ( input != 0 );
 }

@@ -11,8 +11,18 @@
 #define scoresFile "history.bin"
 #define auxiliarFile "auxiliar.bin" //usado para mostrar las estadísticas iniciales y compararlos con las estadísticas finales
 
+typedef struct{
+char name[dimChar];
+int defenseBuff;
+float hpMultiplierBuff;
+float luckBuff;
+float DMGBuff;
+int skillPoints;
+bool isPositive;
+} traitUser;
+
 typedef struct {
-char name[nameLen];
+char name[dimChar];
 bool isWeapon;          //indica si el objeto es un arma, en caso true tendrá los siguientes 2 atributos
 int blockChance;
 int weaponDMG;
@@ -36,7 +46,7 @@ int defense;               //defensa del jugador. Default 0 / Mínimo -5 / Máximo
 float luck;                 //mejora o empeora la posibilidad de un esquive exitoso, golpe crítico y todo lo que pueda ser afectado por la suerte. Default x0 / Mínimo x-0.3 / Máximo x0.3
 itemUser inventory[dimInt];  //listado de items
 int amountItems;        //cantidad total de items
-char traits[dimInt][dimChar];   //buffs y debuffs de jugador
+traitUser traits[dimChar];   //buffs y debuffs de jugador
 int amountTraits;               //cantidad total de rasgos
 int difficulty;             //1 - easy / 2 - normal / 3 - hard / 4 - POSTAL Difficulty
 int healingUsed;        //cuenta la cantidad de pociones de vida usadas
@@ -65,10 +75,14 @@ void showAllStats(playerUser);          //Muestra la totalidad de las stats del 
 bool dodgeroll(float, float, int);     //Decide si es efectivo el dodgeroll o no
 bool blockAttack(float, float, int);      //Decide si el bloqueo con arma es efectivo o no
 float convertDifValueToMultiplier(int);     //Transforma el dato de la dificultad en un multiplicador
+void showPlayerTraits(traitUser[], int);    //Muestra todos los rasgos actuales del jugador
+void showPlayerInventory(itemUser[], int);  //Muestra el inventario actual del jugador
 
 
 
-void drawMenu();
+
+void mainMenu();
+void playMenu();
 void showActions();
 
 

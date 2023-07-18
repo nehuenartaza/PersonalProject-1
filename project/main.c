@@ -23,7 +23,7 @@ int main()
 
     int option;
     do {
-        drawMenu();
+        mainMenu();
         scanf ( "%d", &option );
 
 

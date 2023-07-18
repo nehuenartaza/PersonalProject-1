@@ -11,25 +11,29 @@ void askNickname(char nickname[])
     } while ( confirm != 1 );
 }
 
-void selectTraits()
+int selectTraits(char traits[][dimChar], int totalTraits)       //falta completar (colocar mas rasgos)
 {
 
+
+
+    return totalTraits;
 }
 
-float damageDealedToEnemy(int weaponDamage, float damageMultiplier, int enemysDefense)
+float damageDealedToEnemy(int weaponDamage, float damageMultiplier, int enemysDefense, float luck)
 {
     float currentDamage = 0, damageDealed = 0;
     currentDamage = ( float ) weaponDamage * damageMultiplier;
     damageDealed = ( float ) currentDamage - ( currentDamage * ( enemysDefense * 0.1 ));
-    damageDealed = criticalStrike(damageDealed);
+    damageDealed = criticalStrike(damageDealed, luck);
     return damageDealed;
 }
 
-float criticalStrike(float damageDealed)
+float criticalStrike(float damageDealed, float luck)    //mejorar en base a la suerte
 {
-    int chance = 0;
-    chance = rand () % 1000;
-    if ( chance%3 == 0 || chance%7 == 0 ) {
+    float criticalStrikeChance = 8.0;
+    int pool = rand () % 100;
+    criticalStrikeChance = criticalStrikeChance * luck;
+    if ( pool < criticalStrikeChance ) {
         damageDealed = ( float ) damageDealed * 2;
         printf ( "Critical Strike!!!\n" );
     }
@@ -42,20 +46,179 @@ float calculateHp(float hp, float input)
     return hp;
 }
 
-float heal(float playerHP, float input)
+float heal(float playerHP, float input, float hpMultiplier)
 {
-    playerHP = ( float ) playerHP + input;
+    playerHP = ( float ) playerHP + ( input * hpMultiplier );
     return playerHP;
 }
 
-enemyUser spawnEnemy()
+enemyUser spawnEnemy()      //falta completar (colocar mas enemigos)
 {
     enemyUser enemy;
-    int r = 0;
-    //rand
-
-
+    int r = rand () % totalEnemies;
+    switch ( r ) {
+    case 1:
+        strcpy(enemy.enemyType, "skeleton");
+        break;
+    }
     return enemy;
+}
+
+int selectDifficulty()
+{
+    int difficulty = 0;
+    do {
+        printf ( "Seleccionar dificultad\n" );
+        printf ( "1- easy modo\n2- normal mode\n3- hard mode\n4- POSTAL difficulty\n0- Return\n" );
+        scanf ( "%d", &difficulty );
+        system("cls");
+    } while ( difficulty < 0 || difficulty > 4 );
+    return difficulty;
+}
+
+void showInitialStats(playerUser player)
+{
+    printf ( "Current status:\n" );
+    printf ( "Initial hp: %.1f\n", player.HP );
+    printf ( "Initial DMG: %.2f\n", player.DMG );
+    printf ( "Initial def: %d", player.defense );
+    printf ( "hp Multiplier: x%.1f\n", player.hpMultiplier );
+    printf ( "Initial Luck: x%.1f\n", player.luck );
+    switch ( player.difficulty ) {
+    case 1:
+        printf ( "Difficulty: 'easy modo'\n" );
+        break;
+    case 2:
+        printf ( "Difficulty: 'normal mode'\n" );
+        break;
+    case 3:
+        printf ( "Difficulty: 'hard mode'\n" );
+    case 4:
+        printf ( "Difficulty: 'POSTAL Difficulty'\n" );
+    }
+    if ( player.amountTraits != 0 ) {
+        printf ( "Traits selected:\n" );
+        for ( int i = 0; i < player.amountTraits; i++ ) {
+            printf ( "%s\n", player.traits[i]);
+        }
+    }
+}
+
+void showAllStats(playerUser player)
+{
+    printf ( "'%s' Stats:\n", player.nickname );
+    printf ( "Final hp: %.1f\n", player.HP );
+    printf ( "Final hpMultiplier: x%.1f\n", player.hpMultiplier );
+    printf ( "Amount of healing used: %d", player.healingUsed );
+    printf ( "Final DMG: %.2f\n", player.DMG );
+    printf ( "Total DMG dealed: %.2f\n", player.DMGdealed );
+    printf ( "Total DMG taken: %.2f\n", player.DMGtaken );
+    printf ( "Final DEF: %d", player.defense );
+    printf ( "Final Luck: x%.1f\n", player.luck );
+    printf ( "Final Inventory: %d items\n", player.amountItems );
+    if ( player.amountItems != 0 ) {
+        for ( int i = 0; i < player.amountItems; i++ ) {
+            if ( player.inventory[i].itemIsDiscard == false ) {
+                printf ( "Item: '%s' ", player.inventory[i].name);
+                if ( player.inventory[i].isItem ) {
+                    printf ( "(Utility)\n" );
+                    printf ( "modifier DEF: %d\n", player.inventory[i].defenseBonus );
+                    printf ( "restores: %d life\n", player.inventory[i].lifeHealPoints );
+                    printf ( "luck: %.2f\n", player.inventory[i].luckBonus );
+                    printf ( "+%d score having this item when run finished\n\n", player.inventory[i].scoreBonus );
+                }
+                if ( player.inventory[i].isWeapon ) {
+                    printf ( "(Weapon)\n" );
+                    printf ( "DMG: %d\n", player.inventory[i].weaponDMG );
+                    printf ( "Block-Chance: %d\n\n", player.inventory[i].blockChance );
+                }
+            }
+        }
+    }
+    printf ( "Traits selected: %d\n", player.amountTraits );
+    if ( player.amountTraits != 0 ) {
+        for ( int i = 0; i < player.amountTraits; i++ ) {
+            printf ( "%s\n", player.traits[i]);
+        }
+    }
+    switch ( player.difficulty ) {
+    case 1:
+        printf ( "Difficulty: 'easy modo'\n" );
+        break;
+    case 2:
+        printf ( "Difficulty: 'normal mode'\n" );
+        break;
+    case 3:
+        printf ( "Difficulty: 'hard mode'\n" );
+    case 4:
+        printf ( "Difficulty: 'POSTAL Difficulty'\n" );
+    }
+    printf ( "Final Score: %d", player.score );
+}
+
+bool dodgeroll(float dodgerollChance, float luck, int difficulty)
+{
+    bool dodgeSuccess = false;
+    int pool = 0;
+    float difficultyDebuff = convertDifValueToMultiplier(difficulty);
+    dodgerollChance = ( float ) (( dodgerollChance * luck ) + dodgerollChance ) * difficultyDebuff;
+    pool = rand () % 100;
+    if ( pool < dodgerollChance ) {
+        dodgeSuccess = true;
+    }
+    return dodgeSuccess;
+}
+
+bool blockAttack(float weaponBlockChance, float luck, int difficulty)
+{
+    bool dodgeSuccess = false;
+    int pool = 0;
+    float difficultyDebuff = convertDifValueToMultiplier(difficulty);
+    weaponBlockChance = ( float ) (( weaponBlockChance * luck ) + weaponBlockChance ) * difficultyDebuff;
+    pool = rand () % 100;
+    if ( pool < weaponBlockChance ) {
+        dodgeSuccess = true;
+    }
+    return dodgeSuccess;
+}
+
+float convertDifValueToMultiplier(int difficulty)
+{
+    float difficultyDebuff = 0;
+    switch ( difficulty ) {
+    case 1:
+        difficultyDebuff = 1.0;
+        break;
+    case 2:
+        difficultyDebuff = 0.9;
+        break;
+    case 3:
+        difficultyDebuff = 0.8;
+        break;
+    case 4:
+        difficultyDebuff = 0.7;
+        break;
+    default:
+        difficultyDebuff = 1.0;
+        break;
+    }
+    return difficultyDebuff;
+}
+
+
+
+
+
+
+void showActions()
+{
+    printf ( "1- Attack\n" );
+    printf ( "2- block next attack\n" );
+    printf ( "3- DodgeRoll\n" );
+    printf ( "4- Heal\n" );
+    printf ( "5- Check Inventory\n" );
+    printf ( "0- Do nothing\n" );
+    printf ( "Answer..." );
 }
 
 void drawMenu()

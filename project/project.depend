@@ -1,0 +1,14 @@
+# depslib dependency file v1.0
+1689639269 source:c:\users\nehue\documents\personalproject-1\project\main.c
+	"source.h"
+
+1689654709 c:\users\nehue\documents\personalproject-1\project\source.h
+	<stdio.h>
+	<stdlib.h>
+	<time.h>
+	<string.h>
+	<stdbool.h>
+
+1689654651 source:c:\users\nehue\documents\personalproject-1\project\source.c
+	"source.h"
+

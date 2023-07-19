@@ -17,7 +17,6 @@ int main()
     player.score = 0;
     player.traits;*/
 
-
     //enemyUser enemy;
     srand(time(NULL));
 
@@ -28,6 +27,5 @@ int main()
 
 
     } while ( option != 0 );
-
     return 0;
 }

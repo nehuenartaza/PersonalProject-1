@@ -11,7 +11,7 @@ void askNickname(char nickname[])
     } while ( confirm != 1 );
 }
 
-int selectTraits(char traits[][dimChar], int totalTraits)       //falta completar (colocar mas rasgos)
+int selectTraits(traitUser traits[], int totalTraits)       //falta completar (colocar mas rasgos)
 {
 
 
@@ -19,20 +19,28 @@ int selectTraits(char traits[][dimChar], int totalTraits)       //falta completa
     return totalTraits;
 }
 
-float damageDealedToEnemy(int weaponDamage, float damageMultiplier, int enemysDefense, float luck)
+float damageDealedToEnemy(int weaponDamage, float damageMultiplier, int enemyDefense, float luck, int difficulty)
 {
     float currentDamage = 0, damageDealed = 0;
     currentDamage = ( float ) weaponDamage * damageMultiplier;
-    damageDealed = ( float ) currentDamage - ( currentDamage * ( enemysDefense * 0.1 ));
-    damageDealed = criticalStrike(damageDealed, luck);
+    damageDealed = ( float ) currentDamage - ( currentDamage * ( enemyDefense * 0.1 ));
+    damageDealed = criticalStrike(damageDealed, luck, difficulty);
     return damageDealed;
 }
 
-float criticalStrike(float damageDealed, float luck)
+float damageDealedToPlayer(int playerDefense, float enemyDMG, float enemyDMGmultiplier) //terminar
+{
+    float damageReceived = 0;
+    damageReceived = ( float ) (( enemyDMG * enemyDMGmultiplier ) + enemyDMG );
+
+    return damageReceived;
+}
+
+float criticalStrike(float damageDealed, float luck, int difficulty)
 {
     float criticalStrikeChance = 8.0;
     int pool = rand () % 100;
-    criticalStrikeChance = criticalStrikeChance * luck;
+    criticalStrikeChance = (criticalStrikeChance * luck) * (convertDifValueToMultiplier(difficulty));
     if ( pool < criticalStrikeChance ) {
         damageDealed = ( float ) damageDealed * 2;
         printf ( "Critical Strike!!!\n" );
@@ -68,9 +76,20 @@ int selectDifficulty()
 {
     int difficulty = 0;
     do {
-        printf ( "Seleccionar dificultad\n" );
-        printf ( "1- easy modo\n2- normal mode\n3- hard mode\n4- POSTAL difficulty\n0- Return\n" );
+        printf ( "Seleccionar dificultad:\n" );
+        printf ( "1- easy modo: modo de juego amigable para los mas novatos\n" );
+        printf ( "2- normal mode: experiencia de juego estandar\n" );
+        printf ( "3- hard mode: juego desafiante, para los mas experimentados\n" );
+        printf ( "4- Lunatic mode: ni siquiera lo intentes\n" );
+        printf ( "0- Return\n" );
         scanf ( "%d", &difficulty );
+        if ( difficulty == 4 ) {
+            system("cls");
+            printf ( "You are about to play on the highest difficulty. Enemies will deal +x1.50 DMG than usual, the run could last much more time\n" );
+            printf ( "Dodgerolls and blocks will have more chance of fail. Some thing could be unbalanced. are you sure you want to continue?\n" );
+            printf ( "1-easy modo / 2-normal mode / 3-hard mode / 4-continue in lunatic mode / 0-Return" );
+            scanf ( "%d", &difficulty );
+        }
         system("cls");
     } while ( difficulty < 0 || difficulty > 4 );
     return difficulty;
@@ -123,7 +142,7 @@ void showAllStats(playerUser player)
     case 3:
         printf ( "Difficulty: 'hard mode'\n" );
     case 4:
-        printf ( "Difficulty: 'POSTAL Difficulty'\n" );
+        printf ( "Difficulty: 'Lunatic mode'\n" );
     }
     printf ( "Final Score: %d", player.score );
 }
@@ -152,6 +171,34 @@ bool blockAttack(float weaponBlockChance, float luck, int difficulty)
         dodgeSuccess = true;
     }
     return dodgeSuccess;
+}
+
+bool willDodgeroll()    //en showactions
+{
+    int confirm = 0;
+    bool will = false;
+    do {
+        printf ( "are you sure you want to dodgeroll? 1-yes 0-No\n" );
+        scanf ( "%d", &confirm );
+    } while ( confirm != 1 || confirm != 0 );
+    if ( confirm == 1 ) {
+        will = true;
+    }
+    return will;
+}
+
+bool willBlock()    //en showactions
+{
+    int confirm = 0;
+    bool will = false;
+    do {
+        printf ( "are you sure you want to block? 1-yes 0-No\n" );
+        scanf ( "%d", &confirm );
+    } while ( confirm != 1 || confirm != 0 );
+    if ( confirm == 1 ) {
+        will = true;
+    }
+    return will;
 }
 
 float convertDifValueToMultiplier(int difficulty)
@@ -228,39 +275,50 @@ void showPlayerInventory(itemUser inventory[], int total)
 }
 
 
-void showActions()
+int doAction(itemUser inventory[], int totalItems)      //mejorar
 {
-    printf ( "1- Attack\n" );
-    printf ( "2- block next attack\n" );
-    printf ( "3- DodgeRoll\n" );
-    printf ( "4- Heal\n" );
-    printf ( "5- Check Inventory\n" );
-    printf ( "0- Do nothing\n" );
-    printf ( "Answer..." );
+    int input = 0;
+    do {
+        printf ( "1- Attack\n" );
+        printf ( "2- block next attack\n" );
+        printf ( "3- DodgeRoll\n" );
+        printf ( "4- Heal\n" );
+        printf ( "5- Check Inventory\n" );
+        printf ( "0- Do nothing\n" );
+        printf ( "Answer..." );
+        scanf ( "%d", &input );
+        //condicionales si input == 4 o input == 5
+    } while ( input > 5 || input < 0 );
+    return input;
 }
 
 void mainMenu()
 {
     int input = 1;
     do {
-        printf ( "1- Play\n");
-        printf ( "2- Basics\n");
-        printf ( "3- Credits\n");
-        printf ( "0- Salir\n");
-        printf ( "opcion...");
+        printf ( "1- Play\n" );
+        printf ( "2- Basics\n" );
+        printf ( "3- Credits\n" );
+        printf ( "4- Story\n" );
+        printf ( "0- Leave\n" );
+        printf ( "Insert number..." );
         scanf ( "%d", &input );
         switch ( input ) {
         case 1:
             system("cls");
-
+            playMenu();
             break;
         case 2:
             system("cls");
-
+            basicsMenu();
             break;
         case 3:
             system("cls");
-
+            printfCredits();
+            break;
+        case 4:
+            system("cls");
+            story();
             break;
         }
         system("cls");
@@ -275,20 +333,190 @@ void playMenu()
         printf ( "2- Print history\n" );
         printf ( "3- Print player with HiScore\n" );
         printf ( "0- Return\n" );
+        scanf ( "%d", &input );
         switch ( input ) {
         case 1:
             system("cls");
-            //menu de new run
+            newRun();
             break;
         case 2:
             system("cls");
-            //history print
+            printfHistory();
             break;
         case 3:
             system("cls");
-            //HiScore print
+            printfHiScore();
             break;
         }
         system("cls");
     } while ( input != 0 );
 }
+
+void newRun()                   //completar
+{
+    int action = 0;
+    float damage = 0;   //va a recibir el daño hecho tanto por parte del jugador como del enemigo
+    bool will = false;  //indica si el jugador va a esquivar el ataque o bloquearlo
+    playerUser player;
+    enemyUser enemy;
+    itemUser item;
+    traitUser trait;
+    player.difficulty = selectDifficulty();
+    player.amountTraits = selectTraits(player.traits, player.amountTraits);
+    //otorgar automaticamente un arma al jugador
+    do {
+        action = doAction(player.inventory, player.amountItems);
+        switch ( action ) {
+        case 1:     //si jugador ataca
+            //damage = damageDealedToEnemy(player.inventory[i].weaponDMG, player.DMG, enemy.defense, player.luck, player.difficulty);
+            //Le falta lo de weaponDMG
+            enemy.HP = calculateHp(enemy.HP, damage);
+            player.DMGdealed = player.DMGdealed + damage;
+            printf ( "Damage dealed: %.2f\n", damage );
+            system("pause");
+            system("cls");
+            break;
+        case 2:     //si jugador bloquea
+            will = willBlock();
+            break;
+        case 3:     //si el jugador esquiva
+            will = willDodgeroll();
+            break;
+        }
+
+    } while ( player.HP > 0 );
+
+
+
+
+
+}
+
+void printfHistory()
+{
+    playerUser player;
+    FILE * historyFile = fopen(scoresFile,"ab");
+    if ( historyFile != NULL ) {
+        while ( !feof(historyFile)) {
+            fread(&player, sizeof(playerUser), 1, historyFile);
+            if ( !feof(historyFile)) {
+                showAllStats(player);
+            }
+        }
+        fclose(historyFile);
+    } else {
+            error();
+        }
+}
+
+void printfHiScore()
+{
+    playerUser HSplayer;
+    FILE * historyFile = fopen(scoresFile,"rb");
+    int HiScore = 0, positionOfBest = 0, timesMoving = 0;
+    if ( historyFile != NULL ) {
+        for ( timesMoving = 0; !feof(historyFile); timesMoving++ ) {
+            fread(&HSplayer, sizeof(playerUser), 1, historyFile);
+            if ( !feof(historyFile) && HiScore < HSplayer.score ) {
+                HiScore = HSplayer.score;
+                positionOfBest = timesMoving;
+            }
+        }
+        fseek(historyFile, sizeof(playerUser) * positionOfBest, SEEK_SET);
+        fread(&HSplayer, sizeof(playerUser), 1, historyFile);
+        showAllStats(HSplayer);
+        fclose(historyFile);
+    } else {
+            error();
+        }
+}
+
+void saveRunData(playerUser player)
+{
+    FILE * destiny = fopen(scoresFile,"ab");
+    if ( destiny != NULL ) {
+        fwrite(&player, sizeof(playerUser), 1, destiny);
+        fclose(destiny);
+        printf ( "Data saved\n" );
+        system("pause");
+    } else {
+            error();
+        }
+}
+
+void basicsMenu()
+{
+    int input = 1;
+    do {
+        printf ( "1- How to play\n" );
+        printf ( "2- Items\n" );
+        printf ( "3- Player stats explained\n" );
+        printf ( "0- Return\n" );
+        scanf ( "%d", &input );
+        switch ( input ) {
+        case 1:
+            system("cls");
+            howToPlay();
+            break;
+        case 2:
+            system("cls");
+            explainItems();
+            break;
+        case 3:
+            system("cls");
+            explainPlayerStats();
+            break;
+        }
+        system("cls");
+    } while ( input != 0 );
+}
+
+void howToPlay()
+{
+    printf ( "You start by default with 100HP and 1 default weapon\n" );
+    system("pause");
+    printf ( "Each enemy has their own health, damage and damage multiplier and defense\n" );
+    system("pause");
+    printf ( "You can attack them or dodge or block their attacks with a chance of failing and taking damage\n" );
+    system("pause");
+    printf ( "You can also heal yourself with items like potions\n" );
+    system("pause");
+}
+
+void explainItems()                 //completar
+{
+
+}
+
+void explainPlayerStats()               //completar
+{
+    printf ( "Defense: player by default starts with 0, minimal defense is -5 and max is 8, each 1 defense equals to x0.1 damage reduction\n" );
+    system("pause");
+    printf ( "hpMultiplier: by default x1.0, minimal is x0.5 and max is x1.5. This increases or decreases the total hp gained when the player heals\n" );
+    system("pause");
+    printf ( "Luck: x1 by default, minimal x0.7, max x1.3.Buffs or debuffs chances of dodging, critical hit and all that can be afected by it\n" );
+    system("pause");
+    printf ( "Player DMG: by default x1.0, minimal x0.5, max x1.5. This stat multiplies the damage of the weapon the player is using\n" );
+    system("pause");
+    printf ( "Difficulty: this afects chances of dodging and critical hit chances\n" );
+}
+
+void story()
+{
+    printf ( "I dont have imagination and this doesnt have story, create you own\n- I understand..." );
+    system("pause");
+}
+
+void printfCredits()
+{
+    printf ( "Project coded in 'Code::Blocks' with C\n" );
+    printf ( "Game Designer\nNehuen Artaza\n\n" );
+    printf ( "Game Code by\nNehuen Artaza\n\n" );
+    system("pause");
+}
+
+void error()
+{
+    printf ( "File doesnt exist or failed at open\n" );
+}
+

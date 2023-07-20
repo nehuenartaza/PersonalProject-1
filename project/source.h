@@ -51,6 +51,7 @@ traitUser traits[dimChar];   //buffs y debuffs de jugador
 int amountTraits;               //cantidad total de rasgos
 int difficulty;             //1 - easy / 2 - normal / 3 - hard / 4 - Lunatic mode
 int healingUsed;        //cuenta la cantidad de pociones de vida usadas
+itemUser hands;
 } playerUser;
 
 typedef struct {
@@ -71,7 +72,7 @@ void showInitialStats(playerUser);        //Muestra las estadísticas iniciales, 
 
 //Gameplay
 void newRun();
-int doAction(itemUser[], int);
+int doAction(playerUser);
 float damageDealedToEnemy(int, float, int, float, int);       //Retorna el daño total hecho al enemigo
 float criticalStrike(float, float, int);                //Duplica el daño o no, luego retorna el valor definitivo del daño
 float calculateHp(float, float);              //Resta a la vida el daño, sirve para el hp de jugador y hp de enemigo
@@ -80,6 +81,18 @@ enemyUser spawnEnemy();           //Crea al enemigo que el jugador debe enfrenta
 bool dodgeroll(float, float, int);     //Decide si es efectivo el dodgeroll o no
 bool blockAttack(float, float, int);      //Decide si el bloqueo con arma es efectivo o no
 float convertDifValueToMultiplier(int);     //Transforma el dato de la dificultad en un multiplicador
+float chanceOfBlocking(int, float, int);    //Retorna la posibilidad que hay de bloquear
+float chanceOfDodging(int, float);          //Retorna la posibilidad que hay de esquivar
+bool dodgeOrBlockSuccess(bool, bool, int, float, int);  //Decide si el esquive o el bloqueo falló o no
+itemUser giveBasicWeapon();         //Le otorga un arma inicial al jugador
+void showHands(itemUser);         //Muestra el arma que el jugador lleva equipado
+itemUser generateItem();        //Decide si generar un item o una poción
+itemUser itemPool();          //Genera un item dentro de un listado de posibilidades
+itemUser generateWeapon();      //Genera un arma al azar
+
+
+
+
 
 //Menus
 void mainMenu();

@@ -16,7 +16,6 @@ int main()
     strcpy(player.nickname, "?");
     player.score = 0;
     player.traits;*/
-
     //enemyUser enemy;
     srand(time(NULL));
 

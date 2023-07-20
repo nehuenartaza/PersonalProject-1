@@ -32,14 +32,78 @@ float damageDealedToPlayer(int playerDefense, float enemyDMG, float enemyDMGmult
 {
     float damageReceived = 0;
     damageReceived = ( float ) (( enemyDMG * enemyDMGmultiplier ) + enemyDMG );
-
     return damageReceived;
+}
+
+bool dodgeOrBlockSuccess(bool dodge, bool block, int difficulty, float playerLuck, int weaponBlockChance)
+{
+    bool success = false;
+    float pool = (float) rand() / ((float) 100), chances = 0;
+    if ( dodge ) {
+        chances = chanceOfDodging(difficulty, playerLuck);
+        if ( pool < chances ) {
+            success = true;
+        } else {
+                printf ( "Dodge failed\n" );
+            }
+    }
+    if ( block ) {
+        chances = chanceOfBlocking(difficulty, playerLuck, weaponBlockChance);
+        if ( pool < chances ) {
+            success = true;
+        } else {
+                printf ( "Block failed\n" );
+            }
+    }
+    return success;
+}
+
+float chanceOfDodging(int difficulty, float playerLuck)
+{
+    float chances;
+    switch ( difficulty ) {
+    case 1:
+        chances = 65;
+        break;
+    case 2:
+        chances = 60;
+        break;
+    case 3:
+        chances = 55;
+        break;
+    case 4:
+        chances = 50;
+        break;
+    }
+    chances = ( float ) chances + ( chances * playerLuck );
+    return chances;
+}
+
+float chanceOfBlocking(int difficulty, float playerLuck, int weaponBlockChance)
+{
+    float chances;
+    switch ( difficulty ) {
+    case 1:
+        weaponBlockChance = weaponBlockChance + 2;
+        break;
+    case 2:
+        weaponBlockChance = weaponBlockChance - 1;
+        break;
+    case 3:
+        weaponBlockChance = weaponBlockChance - 4;
+        break;
+    case 4:
+        weaponBlockChance = weaponBlockChance - 7;
+        break;
+    }
+    chances = ( float ) weaponBlockChance + ( weaponBlockChance * playerLuck );
+    return chances;
 }
 
 float criticalStrike(float damageDealed, float luck, int difficulty)
 {
     float criticalStrikeChance = 8.0;
-    int pool = rand () % 100;
+    float pool = (float) rand () / ((float) 100);
     criticalStrikeChance = (criticalStrikeChance * luck) * (convertDifValueToMultiplier(difficulty));
     if ( pool < criticalStrikeChance ) {
         damageDealed = ( float ) damageDealed * 2;
@@ -86,7 +150,7 @@ int selectDifficulty()
         if ( difficulty == 4 ) {
             system("cls");
             printf ( "You are about to play on the highest difficulty. Enemies will deal +x1.50 DMG than usual, the run could last much more time\n" );
-            printf ( "Dodgerolls and blocks will have more chance of fail. Some thing could be unbalanced. are you sure you want to continue?\n" );
+            printf ( "Dodgerolls and blocks will have more chance of fail. Some things could be unbalanced. are you sure you want to continue?\n" );
             printf ( "1-easy modo / 2-normal mode / 3-hard mode / 4-continue in lunatic mode / 0-Return" );
             scanf ( "%d", &difficulty );
         }
@@ -150,7 +214,7 @@ void showAllStats(playerUser player)
 bool dodgeroll(float dodgerollChance, float luck, int difficulty)
 {
     bool dodgeSuccess = false;
-    int pool = 0;
+    float pool = (float) rand() / ((float) 100);
     float difficultyDebuff = convertDifValueToMultiplier(difficulty);
     dodgerollChance = ( float ) (( dodgerollChance * luck ) + dodgerollChance ) * difficultyDebuff;
     pool = rand () % 100;
@@ -163,7 +227,7 @@ bool dodgeroll(float dodgerollChance, float luck, int difficulty)
 bool blockAttack(float weaponBlockChance, float luck, int difficulty)
 {
     bool dodgeSuccess = false;
-    int pool = 0;
+    float pool = (float) rand() / ((float) 100);
     float difficultyDebuff = convertDifValueToMultiplier(difficulty);
     weaponBlockChance = ( float ) (( weaponBlockChance * luck ) + weaponBlockChance ) * difficultyDebuff;
     pool = rand () % 100;
@@ -274,8 +338,75 @@ void showPlayerInventory(itemUser inventory[], int total)
     }
 }
 
+itemUser giveBasicWeapon()
+{
+    itemUser weapon;
+    weapon.isWeapon = true;
+    weapon.isItem = false;
+    weapon.itemIsDiscard = false;
+    weapon.blockChance = (60 - 40) * ((float) rand() / 60) + 40;
+    weapon.weaponDMG = (50 - 30) * ((float) rand() / 50) + 30;
+    weapon.defenseBonus = 0;
+    weapon.lifeHealPoints = 0;
+    weapon.luckBonus = 0;
+    weapon.scoreBonus = 0;
+    strcpy(weapon.name, "basic dagger" );
+    return weapon;
+}
 
-int doAction(itemUser inventory[], int totalItems)      //mejorar
+itemUser generateItem()
+{
+    itemUser item;
+    item.isItem = true;
+    item.isWeapon = false;
+    item.itemIsDiscard = false;
+    item.blockChance = 0;
+    item.defenseBonus = 0;
+    item.luckBonus = 0;
+    item.scoreBonus = 0;
+    item.weaponDMG = 0;
+    int r = rand() % 10;
+    if ( r < 5 ) {
+        r = rand() % 10;
+        if ( r < 5 ) {
+            strcpy(item.name,"HealingPotion");
+            item.lifeHealPoints = rand() % (50 - 25) * (rand() % 50) + 25;
+        } else {
+                strcpy(item.name,"GreaterHealingPotion");
+                item.lifeHealPoints = rand() % (100 - 60) * (rand() % 100) + 60;
+            }
+    } else {
+            item = itemPool();
+        }
+    return item;
+}
+
+itemUser itemPool()
+{
+    itemUser item;
+    int r = rand() % 3;
+    switch ( r ) {
+    case 1: //rings
+
+        break;
+
+
+
+
+    }
+
+
+    return item;
+}
+
+itemUser generateWeapon()       //hacer
+{
+    itemUser weapon;
+
+    return weapon;
+}
+
+int doAction(playerUser player)      //mejorar
 {
     int input = 0;
     do {
@@ -287,9 +418,20 @@ int doAction(itemUser inventory[], int totalItems)      //mejorar
         printf ( "0- Do nothing\n" );
         printf ( "Answer..." );
         scanf ( "%d", &input );
+        if ( input == 5 ) {
+            showPlayerInventory(player.inventory, player.amountItems);
+        }
         //condicionales si input == 4 o input == 5
-    } while ( input > 5 || input < 0 );
+    } while ( input > 4 || input < 0 );
     return input;
+}
+
+void showHands(itemUser weapon)
+{
+    printf ( "Weapon obtained: '%s'\n", weapon.name );
+    printf ( "DMG: %d\n", weapon.weaponDMG );
+    printf ( "Block chance %d", weapon.blockChance );
+    system("pause");
 }
 
 void mainMenu()
@@ -356,20 +498,25 @@ void newRun()                   //completar
 {
     int action = 0;
     float damage = 0;   //va a recibir el daño hecho tanto por parte del jugador como del enemigo
-    bool will = false;  //indica si el jugador va a esquivar el ataque o bloquearlo
+    bool block = false, dodge = false;  //indica si el jugador va a esquivar el ataque o bloquearlo
+    bool success = false;   //posibilidad de bloquear o esquivar el ataque
     playerUser player;
-    enemyUser enemy;
     itemUser item;
-    traitUser trait;
     player.difficulty = selectDifficulty();
     player.amountTraits = selectTraits(player.traits, player.amountTraits);
-    //otorgar automaticamente un arma al jugador
+    player.hands = giveBasicWeapon();
+    showHands(player.hands);
+    enemyUser enemy;
+    enemy = spawnEnemy();
     do {
-        action = doAction(player.inventory, player.amountItems);
+        if ( enemy.HP < 0 ) {
+            //generar enemigo
+            //funciones con printf's que indiquen al jugador el enemigo, su vida y daño, además de dar ambientación para aumentar la jugabilidad
+        }
+        action = doAction(player);
         switch ( action ) {
         case 1:     //si jugador ataca
-            //damage = damageDealedToEnemy(player.inventory[i].weaponDMG, player.DMG, enemy.defense, player.luck, player.difficulty);
-            //Le falta lo de weaponDMG
+            damage = damageDealedToEnemy(player.hands.weaponDMG, player.DMG, enemy.defense, player.luck, player.difficulty);
             enemy.HP = calculateHp(enemy.HP, damage);
             player.DMGdealed = player.DMGdealed + damage;
             printf ( "Damage dealed: %.2f\n", damage );
@@ -377,17 +524,38 @@ void newRun()                   //completar
             system("cls");
             break;
         case 2:     //si jugador bloquea
-            will = willBlock();
+            block = willBlock();
             break;
-        case 3:     //si el jugador esquiva
-            will = willDodgeroll();
+        case 3:     //si jugador esquiva
+            dodge = willDodgeroll();
             break;
         }
+        if ( enemy.HP > 0 ) {   //El enemigo ataca si no está muerto
+            damage = damageDealedToPlayer(player.defense, enemy.DMG, enemy.DMGmultiplier);
+            if ( block ) {
+                success = dodgeOrBlockSuccess(dodge, block, player.difficulty, player.luck, player.hands.weaponDMG);
+            }
+            if ( dodge ) {
+                success = dodgeOrBlockSuccess(dodge, block, player.difficulty, player.luck, player.hands.weaponDMG);
+            }
+            if ( success ) {
+                damage = 0;
+                printf ( "Attack evaded\n" );
+                system("pause");
+            } else {
+                    player.HP = player.HP - damage;
+                }
+        } else {
+                printf ( "Enemy defeated!\n" );
+                //aumentar en 1 la sala, falta crear el sistema de mapa
+            }
 
+
+
+        block = false;
+        dodge = false;
+        success = false;
     } while ( player.HP > 0 );
-
-
-
 
 
 }

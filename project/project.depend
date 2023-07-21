@@ -1,8 +1,8 @@
 # depslib dependency file v1.0
-1689877502 source:c:\users\nehue\documents\personalproject-1\project\main.c
+1689965600 source:c:\users\nehue\documents\personalproject-1\project\main.c
 	"source.h"
 
-1689884658 c:\users\nehue\documents\personalproject-1\project\source.h
+1689965776 c:\users\nehue\documents\personalproject-1\project\source.h
 	<stdio.h>
 	<stdlib.h>
 	<time.h>

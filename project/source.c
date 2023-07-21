@@ -237,7 +237,7 @@ bool blockAttack(float weaponBlockChance, float luck, int difficulty)
     return dodgeSuccess;
 }
 
-bool willDodgeroll()    //en showactions
+bool willDodgeroll()
 {
     int confirm = 0;
     bool will = false;
@@ -251,7 +251,7 @@ bool willDodgeroll()    //en showactions
     return will;
 }
 
-bool willBlock()    //en showactions
+bool willBlock()
 {
     int confirm = 0;
     bool will = false;
@@ -344,8 +344,9 @@ itemUser giveBasicWeapon()
     weapon.isWeapon = true;
     weapon.isItem = false;
     weapon.itemIsDiscard = false;
-    weapon.blockChance = (60 - 40) * ((float) rand() / 60) + 40;
-    weapon.weaponDMG = (50 - 30) * ((float) rand() / 50) + 30;
+    weapon.canBeDiscard = true;
+    weapon.blockChance = (60 - 40) * ( rand() % 60 ) + 40;
+    weapon.weaponDMG = (40 - 20) * ( rand() % 40 ) + 20;
     weapon.defenseBonus = 0;
     weapon.lifeHealPoints = 0;
     weapon.luckBonus = 0;
@@ -360,6 +361,7 @@ itemUser generateItem()
     item.isItem = true;
     item.isWeapon = false;
     item.itemIsDiscard = false;
+    item.canBeDiscard = true;
     item.blockChance = 0;
     item.defenseBonus = 0;
     item.luckBonus = 0;
@@ -384,25 +386,183 @@ itemUser generateItem()
 itemUser itemPool()
 {
     itemUser item;
-    int r = rand() % 3;
+    item.isWeapon= false;
+    item.blockChance = 0;
+    item.weaponDMG = 0;
+    item.isItem = true;
+    item.lifeHealPoints = 0;
+    item.luckBonus = 0;
+    item.defenseBonus = 0;
+    item.scoreBonus = 0;
+    item.itemIsDiscard = false;
+    item.canBeDiscard = true;
+    int r = rand() % 4;
     switch ( r ) {
-    case 1: //rings
-
+    case 1: //rings & others
+        r = rand() % 4;
+        if ( r == 0 ) {
+            strcpy(item.name,"Lucky Ring");
+            item.luckBonus = 0.1;
+        }
+        if ( r == 1 ) {
+            strcpy(item.name,"Ring of Resistance");
+            item.defenseBonus = 1;
+        }
+        if ( r == 2 ) {
+            strcpy(item.name,"Unknown Ring");
+            item.luckBonus = -0.1;
+        }
+        if ( r == 3 ) {
+            strcpy(item.name,"Revenge Charm");
+            item.defenseBonus = -1;
+        }
         break;
-
-
-
-
+    case 2: //gloves
+        r = rand() % 3;
+        if ( r == 0 ) {
+            strcpy(item.name,"Nasty Gloves");
+            item.luckBonus = -0.2;
+        }
+        if ( r == 1 ) {
+            strcpy(item.name,"Defensive Gloves");
+            item.defenseBonus = 1;
+        }
+        if ( r == 2 ) { //estos guantes nunca se pueden tirar del inventario
+            strcpy(item.name,"Cursed Gloves");
+            item.luckBonus = -0.1;
+            item.canBeDiscard = false;
+        }
+        break;
+    case 3:    //boots
+        r = rand() % 3;
+        if ( r == 0 ) {
+            strcpy(item.name,"Sigile Boots");
+            item.luckBonus = 0.1;
+        }
+        if ( r == 1 ) {
+            strcpy(item.name,"Horrible Boots");
+            item.defenseBonus = -1;
+            item.luckBonus = 0.1;
+        }
+        if ( r == 2 ) {
+            strcpy(item.name,"Mythical Boots");
+            item.defenseBonus = 2;
+            item.scoreBonus = 250;
+        }
+        break;
+    default:    //Score items
+        r = rand() % 4;
+        if ( r == 0 ) {
+            strcpy(item.name,"Strange Orb");
+            item.scoreBonus = 400;
+        }
+        if ( r == 1 ) {
+            strcpy(item.name,"Supreme Orb");
+            item.scoreBonus = 700;
+        }
+        if ( r == 2 ) {
+            strcpy(item.name,"Mini Monolith");
+            item.scoreBonus = 500;
+        }
+        if ( r == 3 ) {
+            strcpy(item.name,"???");
+            item.scoreBonus = 2 * ((600 - 500) * ( rand() % 600 ) + 500);
+        }
+        break;
     }
-
-
     return item;
 }
 
 itemUser generateWeapon()       //hacer
 {
     itemUser weapon;
-
+    weapon.isWeapon = true;
+    weapon.blockChance = 0;
+    weapon.weaponDMG = 0;
+    weapon.isItem = false;
+    weapon.lifeHealPoints = 0;
+    weapon.luckBonus = 0;
+    weapon.defenseBonus = 0;
+    weapon.scoreBonus = 0;
+    weapon.itemIsDiscard = false;
+    weapon.canBeDiscard = true;
+    int r = rand() % 3;
+    switch ( r ) {
+    case 1: //daggers
+        r = rand() % 3;
+        if ( r == 0 ) {
+            strcpy(weapon.name,"Advanced Dagger");
+            weapon.blockChance = (65 - 50) * ( rand() % 65 ) + 50;
+            weapon.weaponDMG = (50 - 40) * ( rand() % 50 ) + 40;
+        }
+        if ( r == 1 ) {
+            strcpy(weapon.name,"Broken Dagger");
+            weapon.blockChance = (30 - 20) * ( rand() % 30 ) + 20;
+            weapon.weaponDMG = (25 - 20) * ( rand() % 25 ) + 20;
+        }
+        if ( r == 2 ) {
+            strcpy(weapon.name,"Average Dagger");
+            weapon.blockChance = (55 - 50) * ( rand() % 55 ) + 50;
+            weapon.weaponDMG = (60 - 50) * ( rand() % 60 ) + 50;
+        }
+        break;
+    case 2: //swords & others
+        r = rand() % 102;
+        if ( r >= 0 && r <= 33 ) {
+            strcpy(weapon.name,"Diamond Sword");
+            weapon.blockChance = (80 - 75) * ( rand() % 80 ) + 75;
+            weapon.weaponDMG = (77 - 75) * ( rand() % 77 ) + 75;
+        }
+        if ( r >= 34 && r <= 66 ) {
+            strcpy(weapon.name,"Heavy Sword");
+            weapon.blockChance = (43 - 30) * ( rand() % 43 ) + 30;
+            weapon.weaponDMG = (68 - 60) * ( rand() % 68 ) + 60;
+        }
+        if ( r >= 67 && r <= 99 ) {
+            strcpy(weapon.name,"Origami Sword");
+            weapon.blockChance = (43 - 30) * ( rand() % 43 ) + 30;
+            weapon.weaponDMG = (68 - 60) * ( rand() % 68 ) + 60;
+        }
+        if ( r == 100 ) {
+            strcpy(weapon.name,"Faka");
+            weapon.blockChance = (77 - 70) * ( rand() % 77 ) + 70;
+            weapon.weaponDMG = (90 - 84) * ( rand() % 90 ) + 84;
+        }
+        if ( r == 101 ) {
+            strcpy(weapon.name,"Developer Weapon");
+            weapon.blockChance = (95 - 93) * ( rand() % 95 ) + 93;
+            weapon.weaponDMG = (95 - 93) * ( rand() % 95 ) + 93;
+        }
+        break;
+    default: //ranged
+        r = rand() % 101;
+        if ( r >= 0 && r <= 30 ) {
+            strcpy(weapon.name,"Wodden Bow");
+            weapon.blockChance = (15 - 7) * ( rand() % 15 ) + 7;
+            weapon.weaponDMG = (18 - 15) * ( rand() % 18 ) + 15;
+        }
+        if ( r >= 31 && r <= 60 ) {
+            strcpy(weapon.name,"CrossBow");
+            weapon.blockChance = (30 - 28) * ( rand() % 30 ) + 28;
+            weapon.weaponDMG = (45 - 36) * ( rand() % 45 ) + 36;
+        }
+        if ( r >= 61 && r <= 85 ) {
+            strcpy(weapon.name,"Unexpected Bow");
+            weapon.blockChance = (80 - 20) * ( rand() % 80 ) + 20;
+            weapon.weaponDMG = (80 - 20) * ( rand() % 80 ) + 20;
+        }
+        if ( r >= 86 && r <= 99 ) {
+            strcpy(weapon.name,"Lead Bow");
+            weapon.blockChance = (65 - 46) * ( rand() % 65 ) + 46;
+            weapon.weaponDMG = (61 - 52) * ( rand() % 61 ) + 52;
+        }
+        if ( r == 100 ) {
+            strcpy(weapon.name,"Sniper");
+            weapon.blockChance = (70 - 61) * ( rand() % 70 ) + 61;
+            weapon.weaponDMG = (91 - 87) * ( rand() % 91 ) + 87;
+        }
+        break;
+    }
     return weapon;
 }
 
@@ -428,9 +588,9 @@ int doAction(playerUser player)      //mejorar
 
 void showHands(itemUser weapon)
 {
-    printf ( "Weapon obtained: '%s'\n", weapon.name );
+    printf ( "Weapon: '%s'\n", weapon.name );
     printf ( "DMG: %d\n", weapon.weaponDMG );
-    printf ( "Block chance %d", weapon.blockChance );
+    printf ( "Block chance: %d", weapon.blockChance );
     system("pause");
 }
 

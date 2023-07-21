@@ -33,6 +33,7 @@ int defenseBonus;
 float luckBonus;
 int scoreBonus;
 bool itemIsDiscard;     //indica si fue descartado o no el objeto
+bool canBeDiscard;      //indica si el item puede ser descartado
 } itemUser;
 
 typedef struct {

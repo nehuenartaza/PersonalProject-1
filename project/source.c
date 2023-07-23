@@ -136,6 +136,8 @@ enemyUser spawnEnemy()      //falta completar (colocar mas enemigos)
     return enemy;
 }
 
+
+
 int selectDifficulty()
 {
     int difficulty = 0;
@@ -193,6 +195,7 @@ void showAllStats(playerUser player)
     printf ( "Total DMG taken: %.2f\n", player.DMGtaken );
     printf ( "Final DEF: %d", player.defense );
     printf ( "Final Luck: x%.1f\n", player.luck );
+    showHands(player.hands);
     printf ( "Final Inventory: %d items\n", player.amountItems );
     showPlayerInventory(player.inventory, player.amountItems);
     showPlayerTraits(player.traits, player.amountTraits);
@@ -370,13 +373,16 @@ itemUser generateItem()
     int r = rand() % 10;
     if ( r < 5 ) {
         r = rand() % 10;
-        if ( r < 5 ) {
-            strcpy(item.name,"HealingPotion");
-            item.lifeHealPoints = rand() % (50 - 25) * (rand() % 50) + 25;
-        } else {
+        if ( r <= 6 ) {
+            strcpy(item.name,"AverageHealingPotion");
+            item.lifeHealPoints = rand() % (40 - 25) * (rand() % 40) + 25;
+        } else if ( r <= 9 ) {
                 strcpy(item.name,"GreaterHealingPotion");
-                item.lifeHealPoints = rand() % (100 - 60) * (rand() % 100) + 60;
-            }
+                item.lifeHealPoints = rand() % (60 - 40) * (rand() % 60) + 40;
+            } else {
+                    strcpy(item.name,"SuperHealingPotion");
+                    item.lifeHealPoints = rand() % (100 - 83) * (rand() % 100) + 83;
+                }
     } else {
             item = itemPool();
         }
@@ -427,7 +433,7 @@ itemUser itemPool()
             strcpy(item.name,"Defensive Gloves");
             item.defenseBonus = 1;
         }
-        if ( r == 2 ) { //estos guantes nunca se pueden tirar del inventario
+        if ( r == 2 ) {
             strcpy(item.name,"Cursed Gloves");
             item.luckBonus = -0.1;
             item.canBeDiscard = false;
@@ -473,7 +479,7 @@ itemUser itemPool()
     return item;
 }
 
-itemUser generateWeapon()       //hacer
+itemUser generateWeapon()
 {
     itemUser weapon;
     weapon.isWeapon = true;
@@ -508,17 +514,17 @@ itemUser generateWeapon()       //hacer
         break;
     case 2: //swords & others
         r = rand() % 102;
-        if ( r >= 0 && r <= 33 ) {
+        if ( r >= 0 && r <= 20 ) {
             strcpy(weapon.name,"Diamond Sword");
             weapon.blockChance = (80 - 75) * ( rand() % 80 ) + 75;
             weapon.weaponDMG = (77 - 75) * ( rand() % 77 ) + 75;
         }
-        if ( r >= 34 && r <= 66 ) {
+        if ( r >= 21 && r <= 56 ) {
             strcpy(weapon.name,"Heavy Sword");
             weapon.blockChance = (43 - 30) * ( rand() % 43 ) + 30;
             weapon.weaponDMG = (68 - 60) * ( rand() % 68 ) + 60;
         }
-        if ( r >= 67 && r <= 99 ) {
+        if ( r >= 57 && r <= 99 ) {
             strcpy(weapon.name,"Origami Sword");
             weapon.blockChance = (43 - 30) * ( rand() % 43 ) + 30;
             weapon.weaponDMG = (68 - 60) * ( rand() % 68 ) + 60;
@@ -588,9 +594,10 @@ int doAction(playerUser player)      //mejorar
 
 void showHands(itemUser weapon)
 {
+    printf ( "In hands:\n" );
     printf ( "Weapon: '%s'\n", weapon.name );
     printf ( "DMG: %d\n", weapon.weaponDMG );
-    printf ( "Block chance: %d", weapon.blockChance );
+    printf ( "Block chance: %d\n", weapon.blockChance );
     system("pause");
 }
 
@@ -643,11 +650,11 @@ void playMenu()
             break;
         case 2:
             system("cls");
-            printfHistory();
+            printHistory();
             break;
         case 3:
             system("cls");
-            printfHiScore();
+            printHiScore();
             break;
         }
         system("cls");
@@ -720,7 +727,7 @@ void newRun()                   //completar
 
 }
 
-void printfHistory()
+void printHistory()
 {
     playerUser player;
     FILE * historyFile = fopen(scoresFile,"ab");
@@ -729,6 +736,7 @@ void printfHistory()
             fread(&player, sizeof(playerUser), 1, historyFile);
             if ( !feof(historyFile)) {
                 showAllStats(player);
+                showHands(player.hands);
             }
         }
         fclose(historyFile);
@@ -737,7 +745,7 @@ void printfHistory()
         }
 }
 
-void printfHiScore()
+void printHiScore()
 {
     playerUser HSplayer;
     FILE * historyFile = fopen(scoresFile,"rb");
@@ -753,6 +761,7 @@ void printfHiScore()
         fseek(historyFile, sizeof(playerUser) * positionOfBest, SEEK_SET);
         fread(&HSplayer, sizeof(playerUser), 1, historyFile);
         showAllStats(HSplayer);
+        showHands(HSplayer.hands);
         fclose(historyFile);
     } else {
             error();
@@ -777,8 +786,7 @@ void basicsMenu()
     int input = 1;
     do {
         printf ( "1- How to play\n" );
-        printf ( "2- Items\n" );
-        printf ( "3- Player stats explained\n" );
+        printf ( "2- Player stats explained\n" );
         printf ( "0- Return\n" );
         scanf ( "%d", &input );
         switch ( input ) {
@@ -787,10 +795,6 @@ void basicsMenu()
             howToPlay();
             break;
         case 2:
-            system("cls");
-            explainItems();
-            break;
-        case 3:
             system("cls");
             explainPlayerStats();
             break;
@@ -809,14 +813,11 @@ void howToPlay()
     system("pause");
     printf ( "You can also heal yourself with items like potions\n" );
     system("pause");
+    printf ( "You have 10 slots for items and you can only discard one item if you found another item\n" );
+    system("pause");
 }
 
-void explainItems()                 //completar
-{
-
-}
-
-void explainPlayerStats()               //completar
+void explainPlayerStats()
 {
     printf ( "Defense: player by default starts with 0, minimal defense is -5 and max is 8, each 1 defense equals to x0.1 damage reduction\n" );
     system("pause");

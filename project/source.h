@@ -61,6 +61,7 @@ float HP;
 int DMG;
 int defense;                // Mínimo 0 / Máximo 7
 float DMGmultiplier;        // easy modo x0.9 / normal mode x1.0 / hard mode x1.2 / Lunatic mode x1.5
+bool IsBoss;        //indica si el enemigo es un boss de nivel
 } enemyUser;
 
 //Player
@@ -77,7 +78,7 @@ int doAction(playerUser);
 float damageDealedToEnemy(int, float, int, float, int);       //Retorna el daño total hecho al enemigo
 float criticalStrike(float, float, int);                //Duplica el daño o no, luego retorna el valor definitivo del daño
 float calculateHp(float, float);              //Resta a la vida el daño, sirve para el hp de jugador y hp de enemigo
-float heal(float, float, float);                 //Suma al hp del jugador el valor de la curación, como pociones, etc.
+float heal(float, float, float);             //Suma al hp del jugador el valor de la curación, como pociones, etc.
 enemyUser spawnEnemy();           //Crea al enemigo que el jugador debe enfrentar, dandole valores aleatorios a cada característica
 bool dodgeroll(float, float, int);     //Decide si es efectivo el dodgeroll o no
 bool blockAttack(float, float, int);      //Decide si el bloqueo con arma es efectivo o no
@@ -98,17 +99,16 @@ itemUser generateWeapon();      //Genera un arma al azar
 //Menus
 void mainMenu();
 void playMenu();
-void printfHistory();
 void basicsMenu();
 void howToPlay();
-void explainItems();
 void explainPlayerStats();
 void story();
 
 //Misc
 void error();
-void printfHiScore();
+void printHiScore();       //Busca el jugador con el HiScore de todos y lo muestra
 void printfCredits();
+void printHistory();        //Muestra toda la información de todos los jugadores registrados
 void saveRunData(playerUser);       //Guarda los datos del jugador luego de la partida
 void showAllStats(playerUser);          //Muestra la totalidad de las stats del jugador, usado al finalizar una run
 

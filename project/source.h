@@ -8,6 +8,8 @@
 #define nameLen 10
 #define totalEnemies 5
 #define totalBosses 3
+#define stages 3
+#define rooms 10
 #define scoresFile "history.bin"
 #define auxiliarFile "auxiliar.bin" //usado para mostrar las estadísticas iniciales y compararlos con las estadísticas finales
 #define traitsFile "traitsSource.bin"
@@ -53,6 +55,8 @@ int amountTraits;               //cantidad total de rasgos
 int difficulty;             //1 - easy / 2 - normal / 3 - hard / 4 - Lunatic mode
 int healingUsed;        //cuenta la cantidad de pociones de vida usadas
 itemUser hands;
+int layout[stages][rooms];       //mapa
+char killedBy[dimChar];         //Muestra la razón de muerte
 } playerUser;
 
 typedef struct {
@@ -61,7 +65,7 @@ float HP;
 int DMG;
 int defense;                // Mínimo 0 / Máximo 7
 float DMGmultiplier;        // easy modo x0.9 / normal mode x1.0 / hard mode x1.2 / Lunatic mode x1.5
-bool IsBoss;        //indica si el enemigo es un boss de nivel
+bool isBoss;        //indica si el enemigo es un boss de nivel
 } enemyUser;
 
 //Player
@@ -91,9 +95,9 @@ void showHands(itemUser);         //Muestra el arma que el jugador lleva equipad
 itemUser generateItem();        //Decide si generar un item o una poción
 itemUser itemPool();          //Genera un item dentro de un listado de posibilidades
 itemUser generateWeapon();      //Genera un arma al azar
-
-
-
+void updateMap(int[][rooms], int, int); //Actualiza el mapa
+void printCurrentLocation(int[][rooms]);    //Muestra el mapa
+enemyUser spawnBoss();  //Genera un jefe a derrotar
 
 
 //Menus
@@ -111,6 +115,8 @@ void printfCredits();
 void printHistory();        //Muestra toda la información de todos los jugadores registrados
 void saveRunData(playerUser);       //Guarda los datos del jugador luego de la partida
 void showAllStats(playerUser);          //Muestra la totalidad de las stats del jugador, usado al finalizar una run
+void randomEnemyMessage(char[]);
+void showEnemyStats(enemyUser);
 
 // empezado el 16/07/2023
 // terminado el --/--/----

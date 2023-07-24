@@ -4,7 +4,7 @@
 	<ActiveTarget name="Debug" />
 	<File name="source.c" open="1" top="1" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="24185" topLine="192" />
+			<Cursor1 position="23805" topLine="117" />
 		</Cursor>
 		<Folding>
 			<Collapse line="3" />
@@ -16,37 +16,46 @@
 			<Collapse line="103" />
 			<Collapse line="115" />
 			<Collapse line="121" />
-			<Collapse line="141" />
-			<Collapse line="164" />
-			<Collapse line="217" />
-			<Collapse line="230" />
-			<Collapse line="243" />
-			<Collapse line="257" />
-			<Collapse line="271" />
-			<Collapse line="294" />
-			<Collapse line="321" />
-			<Collapse line="344" />
-			<Collapse line="361" />
-			<Collapse line="392" />
-			<Collapse line="482" />
-			<Collapse line="595" />
-			<Collapse line="604" />
-			<Collapse line="637" />
-			<Collapse line="730" />
-			<Collapse line="820" />
-			<Collapse line="833" />
-			<Collapse line="839" />
-			<Collapse line="847" />
+			<Collapse line="147" />
+			<Collapse line="170" />
+			<Collapse line="193" />
+			<Collapse line="224" />
+			<Collapse line="237" />
+			<Collapse line="250" />
+			<Collapse line="264" />
+			<Collapse line="278" />
+			<Collapse line="301" />
+			<Collapse line="328" />
+			<Collapse line="351" />
+			<Collapse line="368" />
+			<Collapse line="399" />
+			<Collapse line="489" />
+			<Collapse line="602" />
+			<Collapse line="611" />
+			<Collapse line="644" />
+			<Collapse line="752" />
+			<Collapse line="762" />
+			<Collapse line="802" />
+			<Collapse line="809" />
+			<Collapse line="822" />
+			<Collapse line="840" />
+			<Collapse line="863" />
+			<Collapse line="876" />
+			<Collapse line="898" />
+			<Collapse line="912" />
+			<Collapse line="925" />
+			<Collapse line="931" />
+			<Collapse line="939" />
 		</Folding>
+	</File>
+	<File name="source.h" open="1" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="2575" topLine="36" />
+		</Cursor>
 	</File>
 	<File name="main.c" open="1" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
 			<Cursor1 position="454" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="source.h" open="1" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="4392" topLine="75" />
 		</Cursor>
 	</File>
 </CodeBlocks_layout_file>

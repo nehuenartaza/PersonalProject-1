@@ -127,6 +127,7 @@ float heal(float playerHP, float input, float hpMultiplier)
 enemyUser spawnEnemy()      //falta completar (colocar mas enemigos)
 {
     enemyUser enemy;
+    enemy.isBoss = false;
     int r = rand () % totalEnemies;
     switch ( r ) {
     case 1:
@@ -136,7 +137,12 @@ enemyUser spawnEnemy()      //falta completar (colocar mas enemigos)
     return enemy;
 }
 
-
+enemyUser spawnBoss()   //completar (crear jefes)
+{
+    enemyUser boss;
+    boss.isBoss = true;
+    return boss;
+}
 
 int selectDifficulty()
 {
@@ -212,6 +218,7 @@ void showAllStats(playerUser player)
         printf ( "Difficulty: 'Lunatic mode'\n" );
     }
     printf ( "Final Score: %d", player.score );
+    printf ( "Killed by: %s\n", player.killedBy );
 }
 
 bool dodgeroll(float dodgerollChance, float luck, int difficulty)
@@ -667,64 +674,149 @@ void newRun()                   //completar
     float damage = 0;   //va a recibir el daño hecho tanto por parte del jugador como del enemigo
     bool block = false, dodge = false;  //indica si el jugador va a esquivar el ataque o bloquearlo
     bool success = false;   //posibilidad de bloquear o esquivar el ataque
+    int i = 0;
+    int j = 0;
     playerUser player;
     itemUser item;
+    strcpy(player.killedBy,"Nothing");
     player.difficulty = selectDifficulty();
     player.amountTraits = selectTraits(player.traits, player.amountTraits);
     player.hands = giveBasicWeapon();
     showHands(player.hands);
     enemyUser enemy;
-    enemy = spawnEnemy();
-    do {
-        if ( enemy.HP < 0 ) {
-            //generar enemigo
-            //funciones con printf's que indiquen al jugador el enemigo, su vida y daño, además de dar ambientación para aumentar la jugabilidad
-        }
-        action = doAction(player);
-        switch ( action ) {
-        case 1:     //si jugador ataca
-            damage = damageDealedToEnemy(player.hands.weaponDMG, player.DMG, enemy.defense, player.luck, player.difficulty);
-            enemy.HP = calculateHp(enemy.HP, damage);
-            player.DMGdealed = player.DMGdealed + damage;
-            printf ( "Damage dealed: %.2f\n", damage );
-            system("pause");
-            system("cls");
-            break;
-        case 2:     //si jugador bloquea
-            block = willBlock();
-            break;
-        case 3:     //si jugador esquiva
-            dodge = willDodgeroll();
-            break;
-        }
-        if ( enemy.HP > 0 ) {   //El enemigo ataca si no está muerto
-            damage = damageDealedToPlayer(player.defense, enemy.DMG, enemy.DMGmultiplier);
-            if ( block ) {
-                success = dodgeOrBlockSuccess(dodge, block, player.difficulty, player.luck, player.hands.weaponDMG);
-            }
-            if ( dodge ) {
-                success = dodgeOrBlockSuccess(dodge, block, player.difficulty, player.luck, player.hands.weaponDMG);
-            }
-            if ( success ) {
-                damage = 0;
-                printf ( "Attack evaded\n" );
-                system("pause");
-            } else {
-                    player.HP = player.HP - damage;
+    enemy.HP = -1;
+    for ( i = 0; i < stages; i++ ) {    //actual stage
+        for ( j = 0; j < rooms && player.HP > 0; j++ ) {
+            updateMap(player.layout, j, i);
+            do {
+                if ( enemy.HP < 0 && !enemy.isBoss ) {
+                    enemy = spawnEnemy();
+                    randomEnemyMessage(enemy.enemyType);
+                } else {
+                        enemy = spawnBoss();
+                        randomEnemyMessage(enemy.enemyType);
+                    }
+                action = doAction(player);
+                switch ( action ) {
+                case 1:     //si jugador ataca
+                    damage = damageDealedToEnemy(player.hands.weaponDMG, player.DMG, enemy.defense, player.luck, player.difficulty);
+                    enemy.HP = calculateHp(enemy.HP, damage);
+                    player.DMGdealed = player.DMGdealed + damage;
+                    printf ( "Damage dealed: %.2f\n", damage );
+                    system("pause");
+                    system("cls");
+                    break;
+                case 2:     //si jugador bloquea
+                    block = willBlock();
+                    break;
+                case 3:     //si jugador esquiva
+                    dodge = willDodgeroll();
+                    break;
                 }
-        } else {
-                printf ( "Enemy defeated!\n" );
-                //aumentar en 1 la sala, falta crear el sistema de mapa
-            }
+                if ( enemy.HP > 0 ) {   //El enemigo ataca si no está muerto
+                    damage = damageDealedToPlayer(player.defense, enemy.DMG, enemy.DMGmultiplier);
+                }
+                if ( block ) {
+                        success = dodgeOrBlockSuccess(dodge, block, player.difficulty, player.luck, player.hands.weaponDMG);
+                }
+                if ( dodge ) {
+                    success = dodgeOrBlockSuccess(dodge, block, player.difficulty, player.luck, player.hands.weaponDMG);
+                }
+                if ( success ) {
+                    damage = 0;
+                    printf ( "Attack evaded\n" );
+                    system("pause");
+                } else {
+                        player.HP = player.HP - damage;
+                    }
+                if ( player.HP <= 0 ) {
+                    break;
+                }
+                if ( enemy.HP <= 0 && !enemy.isBoss ) {
+                    printf ( "Enemy defeated!\n" );
+                } else {
+                        printf ( "Boss defeated!\n" );
+                    }
+                block = false;
+                dodge = false;
+                success = false;
+                } while ( enemy.HP > 0 );
+        }
+        if ( player.HP <= 0 ) {
+            break;
+        }
+    }
+}
 
 
+void printCurrentLocation(int layout[][rooms])
+{
+    for ( int i = 0; i < stages; i++ ) {
+        for ( int j = 0; j < rooms; j++ ) {
+            printf ( "|%d|", layout[i][j] );
+        }
+        printf ( "\n" );
+    }
+}
 
-        block = false;
-        dodge = false;
-        success = false;
-    } while ( player.HP > 0 );
+void randomEnemyMessage(char enemyName[])
+{
+    int r = rand() % 10;
+    if ( strcmpi(enemyName,"Chest") == 0 ) {
+        printf ( "Cofre salvaje aparece\n" );
+    }
+    switch ( r ) {
+    case 0:
+        printf ( "Avanzas y te encuentras con '%s'\n", enemyName );
+        break;
+    case 1:
+        printf ( "Mientras mirabas una polilla aparece '%s'\n", enemyName );
+        break;
+    case 2:
+        printf ( "Te das cuenta que un enemigo te estaba mirando hace 5 minutos. '%s'\n", enemyName );
+        break;
+    case 3:
+        printf ( "Aparece '%s' y estas pensando en que comer al llegar a casa\n", enemyName );
+        break;
+    case 4:
+        printf ( "'%s' te dice que si te dejas matar vas a revivir en tu casa con un cofre lleno de diamantes\n", enemyName );
+        break;
+    case 5:
+        printf ( "Escuchas susurros en tu mente, pero te das la vuelta y era un enemigo. '%s'\n", enemyName );
+        break;
+    case 6:
+        printf ( "Has muerto...\nMentira, el enemigo es: '%s'\n", enemyName );
+        break;
+    case 7:
+        printf ( "Buscas algo que te pueda servir y te encontras con '%s'\n", enemyName );
+        break;
+    case 8:
+        printf ( "Que queres? ah cierto, el enemigo es '%s'\n", enemyName );
+        break;
+    case 9:
+        printf ( "Alguna vez viste un '%s'? Bueno, ahora si\n", enemyName );
+        break;
+    }
+}
 
+void showEnemyStats(enemyUser enemy)
+{
+    printf ( "HP: %.2f\n", enemy.HP );
+    printf ( "DMG: %d", enemy.DMG );
+    printf ( "DEF: %d", enemy.defense );
+}
 
+void updateMap(int layout[][rooms], int currentRoom, int currentStage)
+{
+    for ( int i = 0; i < stages; i++ ) {    //actualiza el mapa y coloca un 1 en la posición del jugador
+        for ( int j = 0; j < rooms; j++ ) {
+            if ( i == currentStage && j == currentRoom ) {
+                layout[i][j] = 1;
+            } else {
+                    layout[i][j] = 0;
+                }
+        }
+    }
 }
 
 void printHistory()

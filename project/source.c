@@ -11,13 +11,13 @@ void askNickname(char nickname[])
     } while ( confirm != 1 );
 }
 
-int selectTraits(traitUser traits[], int totalTraits)       //falta completar (colocar mas rasgos)
+/*int selectTraits(traitUser traits[], int totalTraits)       //falta completar (colocar mas rasgos)
 {
 
 
 
     return totalTraits;
-}
+}*/
 
 float damageDealedToEnemy(int weaponDamage, float damageMultiplier, int enemyDefense, float luck, int difficulty)
 {
@@ -128,7 +128,7 @@ enemyUser spawnEnemy()      //falta completar (colocar mas enemigos)
 {
     enemyUser enemy;
     enemy.isBoss = false;
-    int r = rand () % totalEnemies;
+    int r = rand () % 3;
     switch ( r ) {
     case 1:
         strcpy(enemy.enemyType, "skeleton");
@@ -187,7 +187,7 @@ void showInitialStats(playerUser player)
     case 4:
         printf ( "Difficulty: 'POSTAL Difficulty'\n" );
     }
-    showPlayerTraits(player.traits, player.amountTraits);
+    //showPlayerTraits(player.traits, player.amountTraits);
 }
 
 void showAllStats(playerUser player)
@@ -204,7 +204,7 @@ void showAllStats(playerUser player)
     showHands(player.hands);
     printf ( "Final Inventory: %d items\n", player.amountItems );
     showPlayerInventory(player.inventory, player.amountItems);
-    showPlayerTraits(player.traits, player.amountTraits);
+    //showPlayerTraits(player.traits, player.amountTraits);
     switch ( player.difficulty ) {
     case 1:
         printf ( "Difficulty: 'easy modo'\n" );
@@ -298,7 +298,7 @@ float convertDifValueToMultiplier(int difficulty)
     return difficultyDebuff;
 }
 
-void showPlayerTraits(traitUser traits[], int total)
+/*void showPlayerTraits(traitUser traits[], int total)
 {
     if ( total != 0 ) {
         printf ( "Traits selected:\n" );
@@ -323,26 +323,15 @@ void showPlayerTraits(traitUser traits[], int total)
             }
         }
     }
-}
+}*/
 
 void showPlayerInventory(itemUser inventory[], int total)
 {
     if ( total != 0 ) {
         for ( int i = 0; i < total; i++ ) {
-            if ( inventory[i].itemIsDiscard == false ) {
-                printf ( "Item: '%s' ", inventory[i].name);
-                if ( inventory[i].isItem ) {
-                    printf ( "(Utility)\n" );
-                    printf ( "modifier DEF: %d\n", inventory[i].defenseBonus );
-                    printf ( "restores: %d life\n", inventory[i].lifeHealPoints );
-                    printf ( "luck: %.2f\n", inventory[i].luckBonus );
-                    printf ( "+%d score having this item when run finished\n\n", inventory[i].scoreBonus );
-                }
-                if ( inventory[i].isWeapon ) {
-                    printf ( "(Weapon)\n" );
-                    printf ( "DMG: %d\n", inventory[i].weaponDMG );
-                    printf ( "Block-Chance: %d\n\n", inventory[i].blockChance );
-                }
+            if ( !inventory[i].itemIsDiscard ) {
+                    printf ( "(Utility) " );
+                    showItem(inventory[i]);
             }
         }
     }
@@ -394,6 +383,18 @@ itemUser generateItem()
             item = itemPool();
         }
     return item;
+}
+
+bool openChest()
+{
+    bool willOpen = false;
+    int confirm = 0;
+    printf ( "Will you open the chest? 1-Yes 0-No\n" );
+    scanf ( "%d", &confirm );
+    if ( confirm == 1 ) {
+        willOpen = true;
+    }
+    return willOpen;
 }
 
 itemUser itemPool()
@@ -579,22 +580,20 @@ itemUser generateWeapon()
     return weapon;
 }
 
-int doAction(playerUser player)      //mejorar
+int doAction()
 {
     int input = 0;
     do {
         printf ( "1- Attack\n" );
         printf ( "2- block next attack\n" );
         printf ( "3- DodgeRoll\n" );
-        printf ( "4- Heal\n" );
-        printf ( "5- Check Inventory\n" );
+        printf ( "4- Check Inventory\n" );
         printf ( "0- Do nothing\n" );
         printf ( "Answer..." );
         scanf ( "%d", &input );
-        if ( input == 5 ) {
-            showPlayerInventory(player.inventory, player.amountItems);
+        if ( input < 0 || input > 4 ) {
+            system("cls");
         }
-        //condicionales si input == 4 o input == 5
     } while ( input > 4 || input < 0 );
     return input;
 }
@@ -670,7 +669,9 @@ void playMenu()
 
 void newRun()                   //completar
 {
+    bool willOpen = false;
     int action = 0;
+    int random = 0;
     float damage = 0;   //va a recibir el daño hecho tanto por parte del jugador como del enemigo
     bool block = false, dodge = false;  //indica si el jugador va a esquivar el ataque o bloquearlo
     bool success = false;   //posibilidad de bloquear o esquivar el ataque
@@ -680,7 +681,7 @@ void newRun()                   //completar
     itemUser item;
     strcpy(player.killedBy,"Nothing");
     player.difficulty = selectDifficulty();
-    player.amountTraits = selectTraits(player.traits, player.amountTraits);
+    //player.amountTraits = selectTraits(player.traits, player.amountTraits);
     player.hands = giveBasicWeapon();
     showHands(player.hands);
     enemyUser enemy;
@@ -696,7 +697,7 @@ void newRun()                   //completar
                         enemy = spawnBoss();
                         randomEnemyMessage(enemy.enemyType);
                     }
-                action = doAction(player);
+                action = doAction();
                 switch ( action ) {
                 case 1:     //si jugador ataca
                     damage = damageDealedToEnemy(player.hands.weaponDMG, player.DMG, enemy.defense, player.luck, player.difficulty);
@@ -711,6 +712,9 @@ void newRun()                   //completar
                     break;
                 case 3:     //si jugador esquiva
                     dodge = willDodgeroll();
+                    break;
+                case 4:     //si jugador quiere ver inventario
+                    showPlayerInventory(player.inventory, player.amountItems);
                     break;
                 }
                 if ( enemy.HP > 0 ) {   //El enemigo ataca si no está muerto
@@ -729,7 +733,8 @@ void newRun()                   //completar
                 } else {
                         player.HP = player.HP - damage;
                     }
-                if ( player.HP <= 0 ) {
+                if ( player.HP <= 0 ) { //si jugador muere
+                    strcpy(player.killedBy,enemy.enemyType);
                     break;
                 }
                 if ( enemy.HP <= 0 && !enemy.isBoss ) {
@@ -737,17 +742,118 @@ void newRun()                   //completar
                 } else {
                         printf ( "Boss defeated!\n" );
                     }
+                if ( enemy.HP <= 0 && i % 2 == 0 ) {
+                    printRandomChestMessage();
+                    printf ( "Open it? 1-Yes 0-no\n" );
+                    scanf ( "%d", &action );
+                    if ( action == 1 ) {
+                        willOpen = true;
+                    }
+                }
+                if ( willOpen ) {
+                    random = rand () % 2;   //genera item o arma
+                    if ( random == 0 ) {
+                        item = generateItem();
+                    } else {
+                            item = generateWeapon();
+                        }
+                    if ( item.isWeapon ) {
+                        printf ( "Change weapon? 1-Yes 0-No\n" );
+                        printf ( "Your weapon:\n" );
+                        showHands(player.hands);
+                        printf ( "Weapon founded:\n" );
+                        showWeapon(item);
+                        scanf ( "%d", &action );
+                        if ( action == 1 ) {
+                            player.hands = item;
+                            printf ( "Weapon changed\n" );
+                            system("pause");
+                            system("cls");
+                        }
+                    }
+                    if ( player.amountItems != inventoryLimit && item.isItem ) {    //se agrega item al inventario si aún no se llenó
+                        player.amountItems++;
+                        player.inventory[player.amountItems] = item;
+                    } else if ( player.amountItems == inventoryLimit && item.isItem ) {     //se consulta en caso de que el inventario esté lleno
+                            do {
+                                printf ( "1- Discard item from inventory\n" );
+                                printf ( "2- Discard item founded\n" );
+                                scanf ( "%d", &action );
+                                if ( action != 1 || action != 2 ) {
+                                    system("cls");
+                                }
+                            } while ( action <= 0 || action >= 3 );
+                            if ( action == 1 ) {
+                                player.amountItems = discardItemFromInventory(player);
+                                player.amountItems++;
+                                player.inventory[player.amountItems] = item;
+                            }
+                        }
+                }
                 block = false;
                 dodge = false;
                 success = false;
+                willOpen = false;
                 } while ( enemy.HP > 0 );
         }
         if ( player.HP <= 0 ) {
             break;
+            //todo referido al boss
         }
     }
 }
 
+void showWeapon(itemUser weapon)
+{
+    printf ( "Name: '%s'\n", weapon.name );
+    printf ( "DMG: %d\n", weapon.weaponDMG );
+    printf ( "Block chance: %d\n", weapon.blockChance );
+}
+
+void showItem(itemUser item)
+{
+    printf ( "Name: '%s'\n", item.name );
+    printf ( "DEFbonus: %d\n", item.defenseBonus );
+    printf ( "HP heal: %d\n", item.lifeHealPoints );
+    printf ( "Luck bonus: %.2f\n",  item.luckBonus );
+    printf ( "Score bonus: %d\n\n", item.scoreBonus );
+}
+
+int discardItemFromInventory(playerUser player)
+{
+    int input = 0;
+    for ( int i = 0; i < player.amountItems; i++ ) {
+        if ( !player.inventory[i].itemIsDiscard ) {
+            showItem(player.inventory[i]);
+            printf ( "Discard this item? 1-Yes\n" );
+            scanf ( "%d", &input );
+            if ( input == 1 ) {
+                player.inventory[i].itemIsDiscard = true;
+            }
+        }
+    }
+    player.amountItems = orderInventory(player.inventory, player.amountItems);
+    return player.amountItems;
+}
+
+int orderInventory(itemUser inv[], int totalItems)
+{
+    int realTotalItems = 0;     //items con itemIsDiscard = false
+    for ( int i = 0; i < totalItems; i++ ) {
+        if ( !inv[i].itemIsDiscard ) {
+            realTotalItems++;
+        }
+    }
+    for ( int i = 0; totalItems != realTotalItems; i++ ) {  //encuentra y los siguientes items se mueven una posición menos
+        if ( inv[i].itemIsDiscard ) {
+            for ( int j = i; j < (totalItems - 1); j++ ) {
+                inv[j] = inv[j+1];
+            }
+            totalItems--;
+        }
+    }
+    return realTotalItems;
+}
 
 void printCurrentLocation(int layout[][rooms])
 {
@@ -756,6 +862,29 @@ void printCurrentLocation(int layout[][rooms])
             printf ( "|%d|", layout[i][j] );
         }
         printf ( "\n" );
+    }
+}
+
+void printRandomChestMessage()
+{
+    int r = rand() % 4;
+    switch ( r ) {
+    case 0:
+        printf ( "Encontraste un cofre\n" );
+        system("pause");
+        break;
+    case 1:
+        printf ( "Que es esa caja? ah si, un cofre, abrilo si queres\n" );
+        system("pause");
+        break;
+    case 2:
+        printf ( "Vas a abrir el cofre que encontraste?\n" );
+        system("pause");
+        break;
+    case 3:
+        printf ( "Habia una vez un cofre\n" );
+        system("pause");
+        break;
     }
 }
 
@@ -768,33 +897,43 @@ void randomEnemyMessage(char enemyName[])
     switch ( r ) {
     case 0:
         printf ( "Avanzas y te encuentras con '%s'\n", enemyName );
+        system("pause");
         break;
     case 1:
         printf ( "Mientras mirabas una polilla aparece '%s'\n", enemyName );
+        system("pause");
         break;
     case 2:
         printf ( "Te das cuenta que un enemigo te estaba mirando hace 5 minutos. '%s'\n", enemyName );
+        system("pause");
         break;
     case 3:
         printf ( "Aparece '%s' y estas pensando en que comer al llegar a casa\n", enemyName );
+        system("pause");
         break;
     case 4:
         printf ( "'%s' te dice que si te dejas matar vas a revivir en tu casa con un cofre lleno de diamantes\n", enemyName );
+        system("pause");
         break;
     case 5:
         printf ( "Escuchas susurros en tu mente, pero te das la vuelta y era un enemigo. '%s'\n", enemyName );
+        system("pause");
         break;
     case 6:
         printf ( "Has muerto...\nMentira, el enemigo es: '%s'\n", enemyName );
+        system("pause");
         break;
     case 7:
         printf ( "Buscas algo que te pueda servir y te encontras con '%s'\n", enemyName );
+        system("pause");
         break;
     case 8:
         printf ( "Que queres? ah cierto, el enemigo es '%s'\n", enemyName );
+        system("pause");
         break;
     case 9:
         printf ( "Alguna vez viste un '%s'? Bueno, ahora si\n", enemyName );
+        system("pause");
         break;
     }
 }
@@ -903,7 +1042,7 @@ void howToPlay()
     system("pause");
     printf ( "You can attack them or dodge or block their attacks with a chance of failing and taking damage\n" );
     system("pause");
-    printf ( "You can also heal yourself with items like potions\n" );
+    printf ( "You can also heal yourself with items like potions. First go to 'Check Inventory' and use them\n" );
     system("pause");
     printf ( "You have 10 slots for items and you can only discard one item if you found another item\n" );
     system("pause");
@@ -940,4 +1079,3 @@ void error()
 {
     printf ( "File doesnt exist or failed at open\n" );
 }
-

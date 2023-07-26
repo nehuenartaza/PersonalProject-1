@@ -22,6 +22,7 @@ void askNickname(char nickname[])
 float damageDealedToEnemy(int weaponDamage, float damageMultiplier, int enemyDefense, float luck, int difficulty)
 {
     float currentDamage = 0, damageDealed = 0;
+    damageMultiplier = validDMGmultiplierLimit(damageMultiplier);
     currentDamage = ( float ) weaponDamage * damageMultiplier;
     damageDealed = ( float ) currentDamage - ( currentDamage * ( enemyDefense * 0.1 ));
     damageDealed = criticalStrike(damageDealed, luck, difficulty);
@@ -31,6 +32,7 @@ float damageDealedToEnemy(int weaponDamage, float damageMultiplier, int enemyDef
 float damageDealedToPlayer(int playerDefense, float enemyDMG, float enemyDMGmultiplier) //terminar
 {
     float damageReceived = 0;
+    playerDefense = validDefenseLimit(playerDefense);
     damageReceived = ( float ) (( enemyDMG * enemyDMGmultiplier ) + enemyDMG );
     return damageReceived;
 }
@@ -75,6 +77,7 @@ float chanceOfDodging(int difficulty, float playerLuck)
         chances = 50;
         break;
     }
+    playerLuck = validLuckLimit(playerLuck);
     chances = ( float ) chances + ( chances * playerLuck );
     return chances;
 }
@@ -96,6 +99,7 @@ float chanceOfBlocking(int difficulty, float playerLuck, int weaponBlockChance)
         weaponBlockChance = weaponBlockChance - 7;
         break;
     }
+    playerLuck = validLuckLimit(playerLuck);
     chances = ( float ) weaponBlockChance + ( weaponBlockChance * playerLuck );
     return chances;
 }
@@ -104,6 +108,7 @@ float criticalStrike(float damageDealed, float luck, int difficulty)
 {
     float criticalStrikeChance = 8.0;
     float pool = (float) rand () / ((float) 100);
+    luck = validLuckLimit(luck);
     criticalStrikeChance = (criticalStrikeChance * luck) * (convertDifValueToMultiplier(difficulty));
     if ( pool < criticalStrikeChance ) {
         damageDealed = ( float ) damageDealed * 2;
@@ -118,10 +123,59 @@ float calculateHp(float hp, float input)
     return hp;
 }
 
-float heal(float playerHP, float input, float hpMultiplier)
+float heal(float input, float hpMultiplier)     //rehacer
 {
-    playerHP = ( float ) playerHP + ( input * hpMultiplier );
-    return playerHP;
+    hpMultiplier = validHPmultiplierLimit(hpMultiplier);
+    float totalHealing = ( float ) input * hpMultiplier;
+    return totalHealing;
+}
+
+float validLuckLimit(float luck)
+{
+    if ( luck > 1.3 ) {
+        luck = 1.3;
+    } else if ( luck < 0.7 ) {
+            luck = 0.7;
+        }
+        return luck;
+}
+
+int validDefenseLimit(int playerDefense)
+{
+    if ( playerDefense > 8 ) {
+        playerDefense = 8;
+    } else if ( playerDefense < -5 ) {
+            playerDefense = -5;
+        }
+    return playerDefense;
+}
+
+float validDMGmultiplierLimit(float DMGmultiplier)
+{
+     if ( DMGmultiplier > 1.5 ) {
+        DMGmultiplier = 1.5;
+    } else if ( DMGmultiplier < 0.5 ) {
+            DMGmultiplier = 0.5;
+        }
+        return DMGmultiplier;
+}
+
+float validHPmultiplierLimit(float HPmultiplier)
+{
+    if ( HPmultiplier > 1.5 ) {
+        HPmultiplier = 1.5;
+    } else if ( HPmultiplier < 0.5 ) {
+            HPmultiplier = 0.5;
+        }
+    return HPmultiplier;
+}
+
+float validMaxHealtLimit(float playerHealth)
+{
+    if ( playerHealth > 200.0 ) {
+        playerHealth = 200.0;
+    }
+    return playerHealth;
 }
 
 enemyUser spawnEnemy()      //falta completar (colocar mas enemigos)
@@ -226,6 +280,7 @@ bool dodgeroll(float dodgerollChance, float luck, int difficulty)
     bool dodgeSuccess = false;
     float pool = (float) rand() / ((float) 100);
     float difficultyDebuff = convertDifValueToMultiplier(difficulty);
+    luck = validLuckLimit(luck);
     dodgerollChance = ( float ) (( dodgerollChance * luck ) + dodgerollChance ) * difficultyDebuff;
     pool = rand () % 100;
     if ( pool < dodgerollChance ) {
@@ -239,6 +294,7 @@ bool blockAttack(float weaponBlockChance, float luck, int difficulty)
     bool dodgeSuccess = false;
     float pool = (float) rand() / ((float) 100);
     float difficultyDebuff = convertDifValueToMultiplier(difficulty);
+    luck = validLuckLimit(luck);
     weaponBlockChance = ( float ) (( weaponBlockChance * luck ) + weaponBlockChance ) * difficultyDebuff;
     pool = rand () % 100;
     if ( pool < weaponBlockChance ) {
@@ -588,13 +644,14 @@ int doAction()
         printf ( "2- block next attack\n" );
         printf ( "3- DodgeRoll\n" );
         printf ( "4- Check Inventory\n" );
+        printf ( "5- Check and use healing\n" );
         printf ( "0- Do nothing\n" );
         printf ( "Answer..." );
         scanf ( "%d", &input );
-        if ( input < 0 || input > 4 ) {
+        if ( input < 0 || input > 5 ) {
             system("cls");
         }
-    } while ( input > 4 || input < 0 );
+    } while ( input > 5 || input < 0 );
     return input;
 }
 
@@ -667,7 +724,7 @@ void playMenu()
     } while ( input != 0 );
 }
 
-void newRun()                   //completar
+void newRun()       //completar
 {
     bool willOpen = false;
     int action = 0;
@@ -675,28 +732,33 @@ void newRun()                   //completar
     float damage = 0;   //va a recibir el daño hecho tanto por parte del jugador como del enemigo
     bool block = false, dodge = false;  //indica si el jugador va a esquivar el ataque o bloquearlo
     bool success = false;   //posibilidad de bloquear o esquivar el ataque
-    int i = 0;
-    int j = 0;
-    playerUser player;
     itemUser item;
+    enemyUser enemy;
+    playerUser player;
+    player.HP = 100.0;
+    player.defense = 0;
+    player.DMG = 1.0;
+    player.DMGdealed = 0;
+    player.DMGtaken = 0;
+    player.healingUsed = 0;
+    player.hpMultiplier = 1.0;
+    player.luck = 1.0;
+    player.amountItems = 0;
+    player.score = 0;
+    player.stage = 0;
+    player.room = 0;
     strcpy(player.killedBy,"Nothing");
     player.difficulty = selectDifficulty();
     //player.amountTraits = selectTraits(player.traits, player.amountTraits);
     player.hands = giveBasicWeapon();
     showHands(player.hands);
-    enemyUser enemy;
-    enemy.HP = -1;
-    for ( i = 0; i < stages; i++ ) {    //actual stage
-        for ( j = 0; j < rooms && player.HP > 0; j++ ) {
-            updateMap(player.layout, j, i);
+
+    for ( int i = 0; i < maxStages; i++ ) {
+        player.stage = i + 1;
+        for ( int j = 0; j < maxRooms; j++ ) {
+            player.room = j + 1;
+            enemy = spawnEnemy();
             do {
-                if ( enemy.HP < 0 && !enemy.isBoss ) {
-                    enemy = spawnEnemy();
-                    randomEnemyMessage(enemy.enemyType);
-                } else {
-                        enemy = spawnBoss();
-                        randomEnemyMessage(enemy.enemyType);
-                    }
                 action = doAction();
                 switch ( action ) {
                 case 1:     //si jugador ataca
@@ -716,6 +778,9 @@ void newRun()                   //completar
                 case 4:     //si jugador quiere ver inventario
                     showPlayerInventory(player.inventory, player.amountItems);
                     break;
+                case 5:
+                    //curacion
+                    break;
                 }
                 if ( enemy.HP > 0 ) {   //El enemigo ataca si no está muerto
                     damage = damageDealedToPlayer(player.defense, enemy.DMG, enemy.DMGmultiplier);
@@ -732,17 +797,23 @@ void newRun()                   //completar
                     system("pause");
                 } else {
                         player.HP = player.HP - damage;
+                        player.DMGtaken = player.DMGtaken + damage;
                     }
-                if ( player.HP <= 0 ) { //si jugador muere
-                    strcpy(player.killedBy,enemy.enemyType);
-                    break;
-                }
-                if ( enemy.HP <= 0 && !enemy.isBoss ) {
+                block = false;
+                dodge = false;
+                success = false;
+                willOpen = false;
+            } while ( enemy.HP > 0 && player.HP > 0 );  //hasta matar al enemigo
+
+            if ( player.HP <= 0 ) {             //si jugador muere
+                strcpy(player.killedBy,enemy.enemyType);
+                break;
+            }
+             if ( enemy.HP <= 0 ) {
                     printf ( "Enemy defeated!\n" );
-                } else {
-                        printf ( "Boss defeated!\n" );
-                    }
-                if ( enemy.HP <= 0 && i % 2 == 0 ) {
+                    system("pause");
+            }
+            if ( enemy.HP <= 0 && i % 2 == 0 ) {
                     printRandomChestMessage();
                     printf ( "Open it? 1-Yes 0-no\n" );
                     scanf ( "%d", &action );
@@ -750,57 +821,58 @@ void newRun()                   //completar
                         willOpen = true;
                     }
                 }
-                if ( willOpen ) {
+            if ( willOpen ) {
                     random = rand () % 2;   //genera item o arma
                     if ( random == 0 ) {
                         item = generateItem();
                     } else {
                             item = generateWeapon();
                         }
-                    if ( item.isWeapon ) {
-                        printf ( "Change weapon? 1-Yes 0-No\n" );
-                        printf ( "Your weapon:\n" );
-                        showHands(player.hands);
-                        printf ( "Weapon founded:\n" );
-                        showWeapon(item);
-                        scanf ( "%d", &action );
-                        if ( action == 1 ) {
-                            player.hands = item;
-                            printf ( "Weapon changed\n" );
-                            system("pause");
-                            system("cls");
-                        }
+            if ( item.isWeapon ) {
+                printf ( "Change weapon? 1-Yes 0-No\n" );
+                printf ( "Your weapon:\n" );
+                showHands(player.hands);
+                printf ( "Weapon founded:\n" );
+                showWeapon(item);
+                scanf ( "%d", &action );
+                if ( action == 1 ) {
+                    player.hands = item;
+                    printf ( "Weapon changed\n" );
+                    system("pause");
+                    system("cls");
+                }
+            }
+            if ( player.amountItems != inventoryLimit && item.isItem && willOpen ) {    //se agrega item al inventario si aún no se llenó
+                player.amountItems++;
+                player.inventory[player.amountItems] = item;
+            } else if ( player.amountItems == inventoryLimit && item.isItem && willOpen ) {     //se consulta en caso de que el inventario esté lleno
+                    do {
+                    printf ( "1- Discard item from inventory\n" );
+                    printf ( "2- Discard item founded\n" );
+                    scanf ( "%d", &action );
+                    if ( action != 1 || action != 2 ) {
+                        system("cls");
                     }
-                    if ( player.amountItems != inventoryLimit && item.isItem ) {    //se agrega item al inventario si aún no se llenó
+                    } while ( action <= 0 || action >= 3 );
+                    if ( action == 1 ) {
+                        player.amountItems = discardItemFromInventory(player);
                         player.amountItems++;
                         player.inventory[player.amountItems] = item;
-                    } else if ( player.amountItems == inventoryLimit && item.isItem ) {     //se consulta en caso de que el inventario esté lleno
-                            do {
-                                printf ( "1- Discard item from inventory\n" );
-                                printf ( "2- Discard item founded\n" );
-                                scanf ( "%d", &action );
-                                if ( action != 1 || action != 2 ) {
-                                    system("cls");
-                                }
-                            } while ( action <= 0 || action >= 3 );
-                            if ( action == 1 ) {
-                                player.amountItems = discardItemFromInventory(player);
-                                player.amountItems++;
-                                player.inventory[player.amountItems] = item;
-                            }
-                        }
+                    }
                 }
-                block = false;
-                dodge = false;
-                success = false;
-                willOpen = false;
-                } while ( enemy.HP > 0 );
+        }   //hasta completar 10 salas
+
+        do {
+            //batalla de boss
+        } while ( enemy.HP > 0 && player.HP > 0 );
+
+            //recompensa por matar al jefe o break si jugador muere
+
         }
-        if ( player.HP <= 0 ) {
-            break;
-            //todo referido al boss
-        }
-    }
+    } //hasta completar 3 stages
+
+    //final donde se pregunta nombre, muestra estadisticas, etc
+
 }
 
 void showWeapon(itemUser weapon)
@@ -855,14 +927,9 @@ int orderInventory(itemUser inv[], int totalItems)
     return realTotalItems;
 }
 
-void printCurrentLocation(int layout[][rooms])
+void printCurrentLocation(int stage, int room)
 {
-    for ( int i = 0; i < stages; i++ ) {
-        for ( int j = 0; j < rooms; j++ ) {
-            printf ( "|%d|", layout[i][j] );
-        }
-        printf ( "\n" );
-    }
+    printf ( "Stage %d / Room %d", stage, room );
 }
 
 void printRandomChestMessage()
@@ -943,19 +1010,6 @@ void showEnemyStats(enemyUser enemy)
     printf ( "HP: %.2f\n", enemy.HP );
     printf ( "DMG: %d", enemy.DMG );
     printf ( "DEF: %d", enemy.defense );
-}
-
-void updateMap(int layout[][rooms], int currentRoom, int currentStage)
-{
-    for ( int i = 0; i < stages; i++ ) {    //actualiza el mapa y coloca un 1 en la posición del jugador
-        for ( int j = 0; j < rooms; j++ ) {
-            if ( i == currentStage && j == currentRoom ) {
-                layout[i][j] = 1;
-            } else {
-                    layout[i][j] = 0;
-                }
-        }
-    }
 }
 
 void printHistory()
@@ -1079,3 +1133,4 @@ void error()
 {
     printf ( "File doesnt exist or failed at open\n" );
 }
+

@@ -123,7 +123,7 @@ float calculateHp(float hp, float input)
     return hp;
 }
 
-float heal(float input, float hpMultiplier)     //rehacer
+float heal(float input, float hpMultiplier)
 {
     hpMultiplier = validHPmultiplierLimit(hpMultiplier);
     float totalHealing = ( float ) input * hpMultiplier;
@@ -178,20 +178,155 @@ float validMaxHealtLimit(float playerHealth)
     return playerHealth;
 }
 
-enemyUser spawnEnemy()      //falta completar (colocar mas enemigos)
+enemyUser spawnEnemy(int stage, int difficulty, float playerLuck)      //falta completar (colocar mas enemigos)
 {
     enemyUser enemy;
     enemy.isBoss = false;
-    int r = rand () % 3;
-    switch ( r ) {
+    int r = 0;
+    float difficultyPenalty = convertDifValueToMultiplier(difficulty);
+    playerLuck = validLuckLimit(playerLuck);
+    switch ( difficulty ) {
     case 1:
-        strcpy(enemy.enemyType, "skeleton");
+        enemy.DMGmultiplier = 0.9;
+        break;
+    case 2:
+        enemy.DMGmultiplier = 1.0;
+        break;
+    case 3:
+        enemy.DMGmultiplier = 1.2;
+        break;
+    case 4:
+        enemy.DMGmultiplier = 1.5;
+        break;
+    }
+
+    switch ( stage ) {
+    case 1:
+        r = rand () % 6;
+        switch ( r ) {
+        case 0:
+            strcpy(enemy.enemyType, "totally normal skeleton");
+            enemy.defense = 1 * ( playerLuck * (-1) ) + ( 1 * 2 );
+            enemy.DMG = 7 *  (( difficultyPenalty * difficultyPenalty ) - playerLuck );
+            enemy.HP = ( float ) 27 * (( difficultyPenalty * 2 ) - playerLuck );
+            break;
+        case 1:
+            strcpy(enemy.enemyType, "clockwork thing");
+            enemy.defense = 2 * ( playerLuck * (-1) ) + ( 2 * 2 );
+            enemy.DMG = 9 *  (( difficultyPenalty * difficultyPenalty ) - playerLuck );
+            enemy.HP = ( float ) 31 * (( difficultyPenalty * 2 ) - playerLuck );
+            break;
+        case 2:
+            strcpy(enemy.enemyType, "flying eye");
+            enemy.defense = 1 * ( playerLuck * (-1) ) + ( 1 * 2 );
+            enemy.DMG = 6 *  (( difficultyPenalty * difficultyPenalty ) - playerLuck );
+            enemy.HP = ( float ) 19 * (( difficultyPenalty * 2 ) - playerLuck );
+            break;
+        case 3:
+            strcpy(enemy.enemyType, "book head");
+            enemy.defense = 2 * ( playerLuck * (-1) ) + ( 2 * 2 );
+            enemy.DMG = 12 *  (( difficultyPenalty * difficultyPenalty ) - playerLuck );
+            enemy.HP = ( float ) 46 * (( difficultyPenalty * 2 ) - playerLuck );
+            break;
+        case 4:
+            strcpy(enemy.enemyType, "ant");
+            enemy.defense = 0 * ( playerLuck * (-1) ) + ( 0 * 2 );
+            enemy.DMG = 15 *  (( difficultyPenalty * difficultyPenalty ) - playerLuck );
+            enemy.HP = ( float ) 7 * (( difficultyPenalty * 2 ) - playerLuck );
+            break;
+        case 5:
+            strcpy(enemy.enemyType, "possesed radio");
+            enemy.defense = 1 * ( playerLuck * (-1) ) + ( 1 * 2 );
+            enemy.DMG = 19 *  (( difficultyPenalty * difficultyPenalty ) - playerLuck );
+            enemy.HP = ( float ) 39 * (( difficultyPenalty * 2 ) - playerLuck );
+            break;
+        }
+    case 2:
+        r = rand () % 6;
+        switch ( r ) {
+        case 0:
+            strcpy(enemy.enemyType, "jellyfish");
+            enemy.defense = 0 * ( playerLuck * (-1) ) + ( 0 * 2 );
+            enemy.DMG = 21 *  (( difficultyPenalty * difficultyPenalty ) - playerLuck );
+            enemy.HP = ( float ) 48 * (( difficultyPenalty * 2 ) - playerLuck );
+            break;
+        case 1:
+            strcpy(enemy.enemyType, "diamond elemental");
+            enemy.defense = 6 * ( playerLuck * (-1) ) + ( 6 * 2 );
+            enemy.DMG = 27 *  (( difficultyPenalty * difficultyPenalty ) - playerLuck );
+            enemy.HP = ( float ) 73 * (( difficultyPenalty * 2 ) - playerLuck );
+            break;
+        case 2:
+            strcpy(enemy.enemyType, "pirate");
+            enemy.defense = 2 * ( playerLuck * (-1) ) + ( 2 * 2 );
+            enemy.DMG = 30 *  (( difficultyPenalty * difficultyPenalty ) - playerLuck );
+            enemy.HP = ( float ) 57 * (( difficultyPenalty * 2 ) - playerLuck );
+            break;
+        case 3:
+            strcpy(enemy.enemyType, "gargoile");
+            enemy.defense = 6 * ( playerLuck * (-1) ) + ( 6 * 2 );
+            enemy.DMG = 31 *  (( difficultyPenalty * difficultyPenalty ) - playerLuck );
+            enemy.HP = ( float ) 72 * (( difficultyPenalty * 2 ) - playerLuck );
+            break;
+        case 4:
+            strcpy(enemy.enemyType, "armored snowball");
+            enemy.defense = 4 * ( playerLuck * (-1) ) + ( 4 * 2 );
+            enemy.DMG = 35 *  (( difficultyPenalty * difficultyPenalty ) - playerLuck );
+            enemy.HP = ( float ) 24 * (( difficultyPenalty * 2 ) - playerLuck );
+            break;
+        case 5:
+            strcpy(enemy.enemyType, "chess tower");
+            enemy.defense = 3 * ( playerLuck * (-1) ) + ( 3 * 2 );
+            enemy.DMG = 40 *  (( difficultyPenalty * difficultyPenalty ) - playerLuck );
+            enemy.HP = ( float ) 77 * (( difficultyPenalty * 2 ) - playerLuck );
+            break;
+        }
+    case 3:
+        r = rand () % 6;
+        switch ( r ) {
+        case 0:
+            strcpy(enemy.enemyType, "fallen star");
+            enemy.defense = 4 * ( playerLuck * (-1) ) + ( 4 * 2 );
+            enemy.DMG = 15 *  (( difficultyPenalty * difficultyPenalty ) - playerLuck );
+            enemy.HP = ( float ) 7 * (( difficultyPenalty * 2 ) - playerLuck );
+            break;
+        case 1:
+            strcpy(enemy.enemyType, "undead armor");
+            enemy.defense = 5 * ( playerLuck * (-1) ) + ( 5 * 2 );
+            enemy.DMG = 23 *  (( difficultyPenalty * difficultyPenalty ) - playerLuck );
+            enemy.HP = ( float ) 58 * (( difficultyPenalty * 2 ) - playerLuck );
+            break;
+        case 2:
+            strcpy(enemy.enemyType, "water mage");
+            enemy.defense = 3 * ( playerLuck * (-1) ) + ( 3 * 2 );
+            enemy.DMG = 43 *  (( difficultyPenalty * difficultyPenalty ) - playerLuck );
+            enemy.HP = ( float ) 70 * (( difficultyPenalty * 2 ) - playerLuck );
+            break;
+        case 3:
+            strcpy(enemy.enemyType, "corpse");
+            enemy.defense = 2 * ( playerLuck * (-1) ) + ( 2 * 2 );
+            enemy.DMG = 28 *  (( difficultyPenalty * difficultyPenalty ) - playerLuck );
+            enemy.HP = ( float ) 64 * (( difficultyPenalty * 2 ) - playerLuck );
+            break;
+        case 4:
+            strcpy(enemy.enemyType, "hanged woman");
+            enemy.defense = 2 * ( playerLuck * (-1) ) + ( 2 * 2 );
+            enemy.DMG = 31 *  (( difficultyPenalty * difficultyPenalty ) - playerLuck );
+            enemy.HP = ( float ) 42 * (( difficultyPenalty * 2 ) - playerLuck );
+            break;
+        case 5:
+            strcpy(enemy.enemyType, "lightning core");
+            enemy.defense = 1 * ( playerLuck * (-1) ) + ( 1 * 2 );
+            enemy.DMG = 68 *  (( difficultyPenalty * difficultyPenalty ) - playerLuck );
+            enemy.HP = ( float ) 19 * (( difficultyPenalty * 2 ) - playerLuck );
+            break;
+        }
         break;
     }
     return enemy;
 }
 
-enemyUser spawnBoss()   //completar (crear jefes)
+enemyUser spawnBoss(int stage, int difficulty, float playerLuck)   //completar (crear jefes)
 {
     enemyUser boss;
     boss.isBoss = true;
@@ -464,6 +599,7 @@ itemUser itemPool()
     item.luckBonus = 0;
     item.defenseBonus = 0;
     item.scoreBonus = 0;
+    item.HPmultiplierBonus = 0;
     item.itemIsDiscard = false;
     item.canBeDiscard = true;
     int r = rand() % 4;
@@ -477,14 +613,17 @@ itemUser itemPool()
         if ( r == 1 ) {
             strcpy(item.name,"Ring of Resistance");
             item.defenseBonus = 1;
+            item.HPmultiplierBonus = 0.1;
         }
         if ( r == 2 ) {
             strcpy(item.name,"Unknown Ring");
             item.luckBonus = -0.1;
+            item.HPmultiplierBonus = -0.1;
         }
         if ( r == 3 ) {
             strcpy(item.name,"Revenge Charm");
             item.defenseBonus = -1;
+            item.HPmultiplierBonus = 0.2;
         }
         break;
     case 2: //gloves
@@ -518,6 +657,7 @@ itemUser itemPool()
             strcpy(item.name,"Mythical Boots");
             item.defenseBonus = 2;
             item.scoreBonus = 250;
+            item.HPmultiplierBonus = 0.2;
         }
         break;
     default:    //Score items
@@ -757,7 +897,7 @@ void newRun()       //completar
         player.stage = i + 1;
         for ( int j = 0; j < maxRooms; j++ ) {
             player.room = j + 1;
-            enemy = spawnEnemy();
+            enemy = spawnEnemy(player.stage, player.difficulty, player.luck);
             do {
                 action = doAction();
                 switch ( action ) {
@@ -809,25 +949,26 @@ void newRun()       //completar
                 strcpy(player.killedBy,enemy.enemyType);
                 break;
             }
-             if ( enemy.HP <= 0 ) {
-                    printf ( "Enemy defeated!\n" );
-                    system("pause");
+            if ( enemy.HP <= 0 ) {
+                printf ( "Enemy defeated!\n" );
+                system("pause");
             }
             if ( enemy.HP <= 0 && i % 2 == 0 ) {
-                    printRandomChestMessage();
-                    printf ( "Open it? 1-Yes 0-no\n" );
-                    scanf ( "%d", &action );
-                    if ( action == 1 ) {
-                        willOpen = true;
-                    }
+                printRandomChestMessage();
+                printf ( "Open it? 1-Yes 0-no\n" );
+                scanf ( "%d", &action );
+                if ( action == 1 ) {
+                    willOpen = true;
                 }
+            }
             if ( willOpen ) {
-                    random = rand () % 2;   //genera item o arma
-                    if ( random == 0 ) {
-                        item = generateItem();
-                    } else {
-                            item = generateWeapon();
-                        }
+                random = rand () % 2;   //genera item o arma
+                if ( random == 0 ) {
+                    item = generateItem();
+                } else {
+                        item = generateWeapon();
+                    }
+            }
             if ( item.isWeapon ) {
                 printf ( "Change weapon? 1-Yes 0-No\n" );
                 printf ( "Your weapon:\n" );
@@ -847,12 +988,12 @@ void newRun()       //completar
                 player.inventory[player.amountItems] = item;
             } else if ( player.amountItems == inventoryLimit && item.isItem && willOpen ) {     //se consulta en caso de que el inventario esté lleno
                     do {
-                    printf ( "1- Discard item from inventory\n" );
-                    printf ( "2- Discard item founded\n" );
-                    scanf ( "%d", &action );
-                    if ( action != 1 || action != 2 ) {
-                        system("cls");
-                    }
+                        printf ( "1- Discard item from inventory\n" );
+                        printf ( "2- Discard item founded\n" );
+                        scanf ( "%d", &action );
+                        if ( action != 1 || action != 2 ) {
+                            system("cls");
+                        }
                     } while ( action <= 0 || action >= 3 );
                     if ( action == 1 ) {
                         player.amountItems = discardItemFromInventory(player);
@@ -860,7 +1001,7 @@ void newRun()       //completar
                         player.inventory[player.amountItems] = item;
                     }
                 }
-        }   //hasta completar 10 salas
+        }//hasta completar 10 salas
 
         do {
             //batalla de boss
@@ -868,8 +1009,7 @@ void newRun()       //completar
 
             //recompensa por matar al jefe o break si jugador muere
 
-        }
-    } //hasta completar 3 stages
+        }//hasta completar 3 stages
 
     //final donde se pregunta nombre, muestra estadisticas, etc
 

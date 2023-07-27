@@ -4,7 +4,7 @@
 #include <string.h>
 #include <stdbool.h>
 #define inventoryLimit 10
-#define dimChar 20
+#define dimChar 25
 #define nameLen 10
 #define maxStages 3
 #define maxRooms 10
@@ -28,6 +28,7 @@ int blockChance;
 int weaponDMG;
 bool isItem;            //indica si el objeto es un item, en caso trie tendrá los siguientes 4 posibles atributos
 int lifeHealPoints;
+float HPmultiplierBonus;
 int defenseBonus;
 float luckBonus;
 int scoreBonus;
@@ -49,7 +50,7 @@ itemUser inventory[inventoryLimit];  //listado de items
 int amountItems;        //cantidad total de items
 //traitUser traits[dimChar];   //buffs y debuffs de jugador
 //int amountTraits;               //cantidad total de rasgos
-int difficulty;             //1 - easy / 2 - normal / 3 - hard / 4 - Lunatic mode
+int difficulty;             //1 - easy modo / 2 - normal mode / 3 - hard mode / 4 - Lunatic mode
 int healingUsed;        //cuenta la cantidad de pociones de vida usadas
 itemUser hands;
 int stage;              //actual stage
@@ -81,7 +82,7 @@ float damageDealedToEnemy(int, float, int, float, int);       //Retorna el daño 
 float criticalStrike(float, float, int);                //Duplica el daño o no, luego retorna el valor definitivo del daño
 float calculateHp(float, float);              //Resta a la vida el daño, sirve para el hp de jugador y hp de enemigo
 float heal(float, float);             //Suma al hp del jugador el valor de la curación, como pociones, etc.
-enemyUser spawnEnemy();           //Crea al enemigo que el jugador debe enfrentar, dandole valores aleatorios a cada característica
+enemyUser spawnEnemy(int, int, float);           //Crea al enemigo que el jugador debe enfrentar, dandole valores aleatorios a cada característica
 bool dodgeroll(float, float, int);     //Decide si es efectivo el dodgeroll o no
 bool blockAttack(float, float, int);      //Decide si el bloqueo con arma es efectivo o no
 float convertDifValueToMultiplier(int);     //Transforma el dato de la dificultad en un multiplicador
@@ -94,7 +95,7 @@ itemUser generateItem();        //Decide si generar un item o una poción
 itemUser itemPool();          //Genera un item dentro de un listado de posibilidades
 itemUser generateWeapon();      //Genera un arma al azar
 void printCurrentLocation(int, int);    //Muestra el mapa
-enemyUser spawnBoss();  //Genera un jefe a derrotar
+enemyUser spawnBoss(int, int, float);  //Genera un jefe a derrotar
 bool openChest();       //Indica si el jugador abre el cofre o no
 float validLuckLimit(float);
 int validDefenseLimit(int);
@@ -131,8 +132,9 @@ int orderInventory(itemUser[], int);    //Ordena el inventario y la cantidad rea
 
 /* APARTADO DE IDEAS
 ENEMIGOS: esqueleto, esqueleto armado (armadura),
+BOSS: heavy breath, anxiety, Larry Bird, insanity
 
-FALTA: crear pool de enemigos y jefes, crear boss fight, sumar las estadísticas de los items al jugador, validar que no se supere la curación de vida
+FALTA: crear pool de enemigos y jefes, crear boss fight, sumar las estadísticas de los items al jugador
 validar que las pociones al usarlas adquieran isItemDiscard = true, hacer sistema de contar la cant de pociones en el inv, mostrarlas y que el jugador decida cual tomar. finalmente testear toda esta cosa
 
 RASGOS: fuerte + x0.2 DMG, debil - x0.2 DMG, resistente +1def, piel de acero +2def, raquitico -3def, suertudo +0.1luck, desafortunado -0.1luck, maldito - 0.2luck

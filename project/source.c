@@ -29,7 +29,7 @@ float damageDealedToEnemy(int weaponDamage, float damageMultiplier, int enemyDef
     return damageDealed;
 }
 
-float damageDealedToPlayer(int playerDefense, float enemyDMG, float enemyDMGmultiplier) //terminar
+float damageDealedToPlayer(int playerDefense, float enemyDMG, float enemyDMGmultiplier)
 {
     float damageReceived = 0;
     playerDefense = validDefenseLimit(playerDefense);
@@ -109,7 +109,7 @@ float criticalStrike(float damageDealed, float luck, int difficulty)
     float criticalStrikeChance = 8.0;
     float pool = (float) rand () / ((float) 100);
     luck = validLuckLimit(luck);
-    criticalStrikeChance = (criticalStrikeChance * luck) * (convertDifValueToMultiplier(difficulty));
+    criticalStrikeChance = ( float ) (criticalStrikeChance * luck) * (convertDifValueToMultiplier(difficulty));
     if ( pool < criticalStrikeChance ) {
         damageDealed = ( float ) damageDealed * 2;
         printf ( "Critical Strike!!!\n" );
@@ -123,7 +123,7 @@ float calculateHp(float hp, float input)
     return hp;
 }
 
-float heal(float input, float hpMultiplier)
+float returnHealing(int input, float hpMultiplier)
 {
     hpMultiplier = validHPmultiplierLimit(hpMultiplier);
     float totalHealing = ( float ) input * hpMultiplier;
@@ -178,7 +178,7 @@ float validMaxHealtLimit(float playerHealth)
     return playerHealth;
 }
 
-enemyUser spawnEnemy(int stage, int difficulty, float playerLuck)      //falta completar (colocar mas enemigos)
+enemyUser spawnEnemy(int stage, int difficulty, float playerLuck)
 {
     enemyUser enemy;
     enemy.isBoss = false;
@@ -241,6 +241,7 @@ enemyUser spawnEnemy(int stage, int difficulty, float playerLuck)      //falta c
             enemy.HP = ( float ) 39 * (( difficultyPenalty * 2 ) - playerLuck );
             break;
         }
+        break;
     case 2:
         r = rand () % 6;
         switch ( r ) {
@@ -281,6 +282,7 @@ enemyUser spawnEnemy(int stage, int difficulty, float playerLuck)      //falta c
             enemy.HP = ( float ) 77 * (( difficultyPenalty * 2 ) - playerLuck );
             break;
         }
+        break;
     case 3:
         r = rand () % 6;
         switch ( r ) {
@@ -330,6 +332,78 @@ enemyUser spawnBoss(int stage, int difficulty, float playerLuck)   //completar (
 {
     enemyUser boss;
     boss.isBoss = true;
+    int r = 0;
+    float difficultyPenalty = convertDifValueToMultiplier(difficulty);
+    playerLuck = validLuckLimit(playerLuck);
+    switch ( difficulty ) {
+    case 1:
+        boss.DMGmultiplier = 0.9;
+        break;
+    case 2:
+        boss.DMGmultiplier = 1.0;
+        break;
+    case 3:
+        boss.DMGmultiplier = 1.2;
+        break;
+    case 4:
+        boss.DMGmultiplier = 1.5;
+        break;
+    }
+
+    switch ( stage ) {
+    case 1:
+        r = rand() % 3;
+        switch ( r ) {
+        case 0:
+            strcpy(boss.enemyType, "Elif the big colossus");
+            boss.defense = 5 * ( playerLuck * (-5) ) + ( 5 * 2 );
+            boss.DMG = 46 *  (( difficultyPenalty * difficultyPenalty ) - playerLuck );
+            boss.HP = ( float ) 87 * (( difficultyPenalty * 2 ) - playerLuck );
+            break;
+        case 1:
+            strcpy(boss.enemyType, "Phantasmal Seeker");
+            boss.defense = 2 * ( playerLuck * (-2) ) + ( 2 * 2 );
+            boss.DMG = 49 *  (( difficultyPenalty * difficultyPenalty ) - playerLuck );
+            boss.HP = ( float ) 113 * (( difficultyPenalty * 2 ) - playerLuck );
+            break;
+        case 2:
+            strcpy(boss.enemyType, "Anxiety");
+            boss.defense = 3 * ( playerLuck * (-3) ) + ( 3 * 2 );
+            boss.DMG = 42 *  (( difficultyPenalty * difficultyPenalty ) - playerLuck );
+            boss.HP = ( float ) 100 * (( difficultyPenalty * 2 ) - playerLuck );
+            break;
+        }
+        break;
+    case 2:
+        r = rand() % 3;
+        switch ( r ) {
+        case 0:
+            strcpy(boss.enemyType, "");
+            boss.defense = 5 * ( playerLuck * (-5) ) + ( 5 * 2 );
+            boss.DMG = 46 *  (( difficultyPenalty * difficultyPenalty ) - playerLuck );
+            boss.HP = ( float ) 87 * (( difficultyPenalty * 2 ) - playerLuck );
+            break;
+        case 1:
+            strcpy(boss.enemyType, "");
+            boss.defense = 2 * ( playerLuck * (-2) ) + ( 2 * 2 );
+            boss.DMG = 49 *  (( difficultyPenalty * difficultyPenalty ) - playerLuck );
+            boss.HP = ( float ) 113 * (( difficultyPenalty * 2 ) - playerLuck );
+            break;
+        case 2:
+            strcpy(boss.enemyType, "");
+            boss.defense = 3 * ( playerLuck * (-3) ) + ( 3 * 2 );
+            boss.DMG = 42 *  (( difficultyPenalty * difficultyPenalty ) - playerLuck );
+            boss.HP = ( float ) 100 * (( difficultyPenalty * 2 ) - playerLuck );
+            break;
+        }
+        break;
+    case 3:
+        strcpy(boss.enemyType, "");
+        boss.defense = 5 * ( playerLuck * (-5) ) + ( 5 * 2 );
+        boss.DMG = 46 *  (( difficultyPenalty * difficultyPenalty ) - playerLuck );
+        boss.HP = ( float ) 87 * (( difficultyPenalty * 2 ) - playerLuck );
+        break;
+    }
     return boss;
 }
 
@@ -356,36 +430,26 @@ int selectDifficulty()
     return difficulty;
 }
 
-void showInitialStats(playerUser player)
+void showBasicPlayerStats(playerUser player)
 {
     printf ( "Current status:\n" );
-    printf ( "Initial hp: %.1f\n", player.HP );
-    printf ( "Initial DMG: %.2f\n", player.DMG );
-    printf ( "Initial def: %d", player.defense );
-    printf ( "hp Multiplier: x%.1f\n", player.hpMultiplier );
-    printf ( "Initial Luck: x%.1f\n", player.luck );
-    switch ( player.difficulty ) {
-    case 1:
-        printf ( "Difficulty: 'easy modo'\n" );
-        break;
-    case 2:
-        printf ( "Difficulty: 'normal mode'\n" );
-        break;
-    case 3:
-        printf ( "Difficulty: 'hard mode'\n" );
-    case 4:
-        printf ( "Difficulty: 'POSTAL Difficulty'\n" );
-    }
+    if ( player.HP < 50.0 ) {
+        printf ( "HP: %.2f | !!! |\n", player.HP );
+    } else {
+            printf ( "HP: %.2f\n", player.HP );
+        }
+    printf ( "DEF: %d", player.defense );
+    printf ( "Score: %d\n\n", player.score );
     //showPlayerTraits(player.traits, player.amountTraits);
 }
 
 void showAllStats(playerUser player)
 {
     printf ( "'%s' Stats:\n", player.nickname );
-    printf ( "Final hp: %.1f\n", player.HP );
+    printf ( "Final hp: %.2f\n", player.HP );
     printf ( "Final hpMultiplier: x%.1f\n", player.hpMultiplier );
-    printf ( "Amount of healing used: %d", player.healingUsed );
-    printf ( "Final DMG: %.2f\n", player.DMG );
+    printf ( "Healing used: %d", player.healingUsed );
+    printf ( "Final DMG multiplier: %.1f\n", player.DMG );
     printf ( "Total DMG dealed: %.2f\n", player.DMGdealed );
     printf ( "Total DMG taken: %.2f\n", player.DMGtaken );
     printf ( "Final DEF: %d", player.defense );
@@ -394,20 +458,24 @@ void showAllStats(playerUser player)
     printf ( "Final Inventory: %d items\n", player.amountItems );
     showPlayerInventory(player.inventory, player.amountItems);
     //showPlayerTraits(player.traits, player.amountTraits);
+    printf ( "Difficulty: ");
     switch ( player.difficulty ) {
     case 1:
-        printf ( "Difficulty: 'easy modo'\n" );
+        printf ( "'easy modo'\n" );
         break;
     case 2:
-        printf ( "Difficulty: 'normal mode'\n" );
+        printf ( "'normal mode'\n" );
         break;
     case 3:
-        printf ( "Difficulty: 'hard mode'\n" );
+        printf ( "'hard mode'\n" );
+        break;
     case 4:
-        printf ( "Difficulty: 'Lunatic mode'\n" );
+        printf ( "'Lunatic mode'\n" );
+        break;
     }
     printf ( "Final Score: %d", player.score );
     printf ( "Killed by: %s\n", player.killedBy );
+    printf ( "Stage %d, room %d\n", player.stage, player.room );
 }
 
 bool dodgeroll(float dodgerollChance, float luck, int difficulty)
@@ -521,8 +589,7 @@ void showPlayerInventory(itemUser inventory[], int total)
     if ( total != 0 ) {
         for ( int i = 0; i < total; i++ ) {
             if ( !inventory[i].itemIsDiscard ) {
-                    printf ( "(Utility) " );
-                    showItem(inventory[i]);
+                showItem(inventory[i]);
             }
         }
     }
@@ -594,6 +661,7 @@ itemUser itemPool()
     item.isWeapon= false;
     item.blockChance = 0;
     item.weaponDMG = 0;
+    item.DMGmultiplierBonus = 0;
     item.isItem = true;
     item.lifeHealPoints = 0;
     item.luckBonus = 0;
@@ -602,6 +670,7 @@ itemUser itemPool()
     item.HPmultiplierBonus = 0;
     item.itemIsDiscard = false;
     item.canBeDiscard = true;
+    item.buffAdquired = false;
     int r = rand() % 4;
     switch ( r ) {
     case 1: //rings & others
@@ -624,6 +693,7 @@ itemUser itemPool()
             strcpy(item.name,"Revenge Charm");
             item.defenseBonus = -1;
             item.HPmultiplierBonus = 0.2;
+            item.DMGmultiplierBonus = 0.1;
         }
         break;
     case 2: //gloves
@@ -631,6 +701,7 @@ itemUser itemPool()
         if ( r == 0 ) {
             strcpy(item.name,"Nasty Gloves");
             item.luckBonus = -0.2;
+            item.DMGmultiplierBonus = -0.1;
         }
         if ( r == 1 ) {
             strcpy(item.name,"Defensive Gloves");
@@ -640,24 +711,33 @@ itemUser itemPool()
             strcpy(item.name,"Cursed Gloves");
             item.luckBonus = -0.1;
             item.canBeDiscard = false;
+            item.DMGmultiplierBonus = -0.1;
         }
         break;
     case 3:    //boots
-        r = rand() % 3;
+        r = rand() % 4;
         if ( r == 0 ) {
             strcpy(item.name,"Sigile Boots");
             item.luckBonus = 0.1;
+            item.DMGmultiplierBonus = 0.1;
         }
         if ( r == 1 ) {
             strcpy(item.name,"Horrible Boots");
             item.defenseBonus = -1;
             item.luckBonus = 0.1;
+            item.DMGmultiplierBonus = -0.3;
         }
         if ( r == 2 ) {
             strcpy(item.name,"Mythical Boots");
             item.defenseBonus = 2;
             item.scoreBonus = 250;
             item.HPmultiplierBonus = 0.2;
+            item.DMGmultiplierBonus = 0.2;
+        }
+        if ( r == 3 ) {
+            strcpy(item.name,"Rainbow Boots");
+            item.DMGmultiplierBonus = 0.2;
+            item.defenseBonus = 1;
         }
         break;
     default:    //Score items
@@ -797,8 +877,8 @@ int doAction()
 
 void showHands(itemUser weapon)
 {
-    printf ( "In hands:\n" );
-    printf ( "Weapon: '%s'\n", weapon.name );
+    printf ( "In hands: " );
+    printf ( "(Weapon) '%s'\n", weapon.name );
     printf ( "DMG: %d\n", weapon.weaponDMG );
     printf ( "Block chance: %d\n", weapon.blockChance );
     system("pause");
@@ -826,7 +906,7 @@ void mainMenu()
             break;
         case 3:
             system("cls");
-            printfCredits();
+            printCredits();
             break;
         case 4:
             system("cls");
@@ -867,6 +947,7 @@ void playMenu()
 void newRun()       //completar
 {
     bool willOpen = false;
+    bool haveHealing = false;   //indica si el jugador tiene algo para curarse
     int action = 0;
     int random = 0;
     float damage = 0;   //va a recibir el daño hecho tanto por parte del jugador como del enemigo
@@ -897,15 +978,20 @@ void newRun()       //completar
         player.stage = i + 1;
         for ( int j = 0; j < maxRooms; j++ ) {
             player.room = j + 1;
+            printCurrentLocation(player.stage, player.room);
             enemy = spawnEnemy(player.stage, player.difficulty, player.luck);
+            printRandomEnemyMessage(enemy.enemyType);
             do {
+                showBasicPlayerStats(player);
+                showEnemyStats(enemy);
                 action = doAction();
                 switch ( action ) {
                 case 1:     //si jugador ataca
                     damage = damageDealedToEnemy(player.hands.weaponDMG, player.DMG, enemy.defense, player.luck, player.difficulty);
                     enemy.HP = calculateHp(enemy.HP, damage);
-                    player.DMGdealed = player.DMGdealed + damage;
+                    player.DMGdealed = ( float ) player.DMGdealed + damage;
                     printf ( "Damage dealed: %.2f\n", damage );
+                    player.score = player.score + ( damage / 2 );
                     system("pause");
                     system("cls");
                     break;
@@ -919,14 +1005,21 @@ void newRun()       //completar
                     showPlayerInventory(player.inventory, player.amountItems);
                     break;
                 case 5:
-                    //curacion
+                    player.amountItems = orderInventory(player.inventory, player.amountItems);
+                    haveHealing = healingInInventory(player.inventory, player.amountItems);
+                    if ( haveHealing ) {
+                        player = checkAndUseHealing(player);
+                    } else {
+                            printf ( "No potions in inventory\n" );
+                            system("pause");
+                        }
                     break;
                 }
                 if ( enemy.HP > 0 ) {   //El enemigo ataca si no está muerto
                     damage = damageDealedToPlayer(player.defense, enemy.DMG, enemy.DMGmultiplier);
                 }
                 if ( block ) {
-                        success = dodgeOrBlockSuccess(dodge, block, player.difficulty, player.luck, player.hands.weaponDMG);
+                    success = dodgeOrBlockSuccess(dodge, block, player.difficulty, player.luck, player.hands.weaponDMG);
                 }
                 if ( dodge ) {
                     success = dodgeOrBlockSuccess(dodge, block, player.difficulty, player.luck, player.hands.weaponDMG);
@@ -935,9 +1028,11 @@ void newRun()       //completar
                     damage = 0;
                     printf ( "Attack evaded\n" );
                     system("pause");
+                    player.score = player.score + 50;
                 } else {
-                        player.HP = player.HP - damage;
-                        player.DMGtaken = player.DMGtaken + damage;
+                        printf ( "You took %.2f damage", damage );
+                        player.HP = ( float ) player.HP - damage;
+                        player.DMGtaken = ( float ) player.DMGtaken + damage;
                     }
                 block = false;
                 dodge = false;
@@ -951,6 +1046,7 @@ void newRun()       //completar
             }
             if ( enemy.HP <= 0 ) {
                 printf ( "Enemy defeated!\n" );
+                player.score = player.score + 100;
                 system("pause");
             }
             if ( enemy.HP <= 0 && i % 2 == 0 ) {
@@ -970,22 +1066,12 @@ void newRun()       //completar
                     }
             }
             if ( item.isWeapon ) {
-                printf ( "Change weapon? 1-Yes 0-No\n" );
-                printf ( "Your weapon:\n" );
-                showHands(player.hands);
-                printf ( "Weapon founded:\n" );
-                showWeapon(item);
-                scanf ( "%d", &action );
-                if ( action == 1 ) {
-                    player.hands = item;
-                    printf ( "Weapon changed\n" );
-                    system("pause");
-                    system("cls");
-                }
+                player.hands = changeWeaponInHands(player.hands, item);
             }
             if ( player.amountItems != inventoryLimit && item.isItem && willOpen ) {    //se agrega item al inventario si aún no se llenó
                 player.amountItems++;
                 player.inventory[player.amountItems] = item;
+                getItemsBonus(player);
             } else if ( player.amountItems == inventoryLimit && item.isItem && willOpen ) {     //se consulta en caso de que el inventario esté lleno
                     do {
                         printf ( "1- Discard item from inventory\n" );
@@ -999,20 +1085,102 @@ void newRun()       //completar
                         player.amountItems = discardItemFromInventory(player);
                         player.amountItems++;
                         player.inventory[player.amountItems] = item;
+                        getItemsBonus(player);
                     }
                 }
         }//hasta completar 10 salas
 
+        if ( player.HP <=  0 ) {
+            strcpy(player.killedBy, enemy.enemyType);
+            break;
+        }
         do {
             //batalla de boss
-        } while ( enemy.HP > 0 && player.HP > 0 );
+        } while ( enemy.HP > 0 && player.HP > 0 );  //hasta matar al boss
 
-            //recompensa por matar al jefe o break si jugador muere
+        if ( player.HP <=  0 ) {
+            strcpy(player.killedBy, enemy.enemyType);
+            break;
+        }
+            //recompensa por matar al jefe
 
         }//hasta completar 3 stages
 
+
     //final donde se pregunta nombre, muestra estadisticas, etc
 
+}
+
+bool healingInInventory(itemUser inv[], int totalItems)
+{
+    bool haveHealing = false;
+    for ( int i = 0; i < totalItems; i++ ) {
+        if ( inv[i].lifeHealPoints != 0 ) {
+            haveHealing = true;
+        }
+    }
+    return haveHealing;
+}
+
+playerUser checkAndUseHealing(playerUser player)
+{
+    int action = 0;
+    for ( int i = 0; i < player.amountItems; i++ ) {
+        if ( player.inventory[i].isItem && player.inventory[i].lifeHealPoints != 0 ) {
+            printf ( "Your health: %.2f\n", player.HP );
+            showItem(player.inventory[i]);
+            do {
+                printf ( "Use healing potion? 1-Yes 0-No\n" );
+                scanf ( "%d", &action );
+            } while ( action != 1 || action != 0 );
+            if ( action == 1 ) {
+                player.HP = ( float ) player.HP + returnHealing(player.inventory[i].lifeHealPoints, player.hpMultiplier);
+                player.HP = validMaxHealtLimit(player.HP);
+                player.healingUsed++;
+                player.inventory[i].itemIsDiscard = true;
+            }
+            system("cls");
+        }
+    }
+    return player;
+}
+
+itemUser changeWeaponInHands(itemUser hands, itemUser newWeapon)
+{
+    int action = 0;
+    printf ( "Change weapon? 1-Yes 0-No\n" );
+    printf ( "Your weapon:\n" );
+    showHands(hands);
+    printf ( "Weapon founded:\n" );
+    showWeapon(newWeapon);
+    scanf ( "%d", &action );
+    if ( action == 1 ) {
+        hands = newWeapon;
+        printf ( "Weapon changed\n" );
+        system("pause");
+        system("cls");
+    }
+    return hands;
+}
+
+playerUser getItemsBonus(playerUser player)
+{
+    for ( int i = 0; i < player.amountItems; i++ ) {
+        if ( !player.inventory[i].buffAdquired && !player.inventory[i].itemIsDiscard ) {
+            player.defense = player.defense + player.inventory[i].defenseBonus;
+            player.hpMultiplier = ( float ) player.hpMultiplier + player.inventory[i].lifeHealPoints;
+            player.DMG = ( float ) player.DMG + player.inventory[i].DMGmultiplierBonus;
+            player.luck = ( float ) player.luck + player.inventory[i].luckBonus;
+            player.inventory[i].buffAdquired = true;
+        } else if ( player.inventory[i].buffAdquired && player.inventory[i].itemIsDiscard ) {
+                player.defense = player.defense - player.inventory[i].defenseBonus;
+                player.hpMultiplier = ( float ) player.hpMultiplier - player.inventory[i].lifeHealPoints;
+                player.DMG = ( float ) player.DMG - player.inventory[i].DMGmultiplierBonus;
+                player.luck = ( float ) player.luck - player.inventory[i].luckBonus;
+                player.inventory[i].buffAdquired = false;
+            }
+    }
+    return player;
 }
 
 void showWeapon(itemUser weapon)
@@ -1024,11 +1192,25 @@ void showWeapon(itemUser weapon)
 
 void showItem(itemUser item)
 {
-    printf ( "Name: '%s'\n", item.name );
-    printf ( "DEFbonus: %d\n", item.defenseBonus );
-    printf ( "HP heal: %d\n", item.lifeHealPoints );
-    printf ( "Luck bonus: %.2f\n",  item.luckBonus );
-    printf ( "Score bonus: %d\n\n", item.scoreBonus );
+    printf ( "(Utility) '%s'\n", item.name );
+    if ( item.defenseBonus != 0 ) {
+        printf ( "DEFbonus: %d\n", item.defenseBonus );
+    }
+    if ( item.lifeHealPoints != 0 ) {
+        printf ( "HP heal: %d\n", item.lifeHealPoints );
+    }
+    if ( item.lifeHealPoints != 0 ) {
+        printf ( "HP multiplier: %.2f\n", item.HPmultiplierBonus );
+    }
+    if ( item.luckBonus != 0 ) {
+        printf ( "Luck bonus: %.2f\n",  item.luckBonus );
+    }
+    if ( item.scoreBonus != 0 ) {
+        printf ( "Score bonus: %d\n\n", item.scoreBonus );
+    }
+    if ( item.DMGmultiplierBonus != 0 ) {
+        printf ( "DMG multiplier: %.2f\n\n", item.DMGmultiplierBonus );
+    }
 }
 
 int discardItemFromInventory(playerUser player)
@@ -1058,10 +1240,12 @@ int orderInventory(itemUser inv[], int totalItems)
     }
     for ( int i = 0; totalItems != realTotalItems; i++ ) {  //encuentra y los siguientes items se mueven una posición menos
         if ( inv[i].itemIsDiscard ) {
-            for ( int j = i; j < (totalItems - 1); j++ ) {
-                inv[j] = inv[j+1];
-            }
-            totalItems--;
+            do {
+                for ( int j = i; j < (totalItems - 1); j++ ) {
+                    inv[j] = inv[j+1];
+                }
+                totalItems--;
+            } while ( inv[i].itemIsDiscard );   //en caso de que haya 2 o mas items consecutivos con itemIsDiscard = true
         }
     }
     return realTotalItems;
@@ -1095,12 +1279,9 @@ void printRandomChestMessage()
     }
 }
 
-void randomEnemyMessage(char enemyName[])
+void printRandomEnemyMessage(char enemyName[])
 {
     int r = rand() % 10;
-    if ( strcmpi(enemyName,"Chest") == 0 ) {
-        printf ( "Cofre salvaje aparece\n" );
-    }
     switch ( r ) {
     case 0:
         printf ( "Avanzas y te encuentras con '%s'\n", enemyName );
@@ -1145,17 +1326,35 @@ void randomEnemyMessage(char enemyName[])
     }
 }
 
+void printRandomBossMessage(char bossName[])
+{
+    int r = rand() % 3;
+    switch ( r ) {
+    case 0:
+        printf ( "Te encuentras cara a cara con %s\n", bossName );
+        system("pause");
+        break;
+    case 1:
+        printf ( "Mata a %s o muere\n", bossName );
+        system("pause");
+        break;
+    case 2:
+        printf ( "La velocidad con la que %s aparece para detenerte deja de que hablar\n", bossName );
+        system("pause");
+    }
+}
+
 void showEnemyStats(enemyUser enemy)
 {
     printf ( "HP: %.2f\n", enemy.HP );
-    printf ( "DMG: %d", enemy.DMG );
-    printf ( "DEF: %d", enemy.defense );
+    printf ( "DMG: %d\n", enemy.DMG );
+    printf ( "DEF: %d\n\n", enemy.defense );
 }
 
 void printHistory()
 {
     playerUser player;
-    FILE * historyFile = fopen(scoresFile,"ab");
+    FILE * historyFile = fopen(scoresFile,"rb");
     if ( historyFile != NULL ) {
         while ( !feof(historyFile)) {
             fread(&player, sizeof(playerUser), 1, historyFile);
@@ -1191,6 +1390,59 @@ void printHiScore()
     } else {
             error();
         }
+}
+
+void printGameOverMessages(int difficulty)      //rehacer case 1 2 3 con switch en lugar de if
+{
+    int r = 0;
+    printf ( "You died\n" );
+    system("pause");
+    switch ( difficulty ) {
+    case 1:
+        r = rand () % 2;
+        if ( r == 0 ) {
+            printf ( "eeEeH. easy modo?\n" );
+        } else {
+                printf ( "That was easy or not?\n" );
+            }
+        break;
+    case 2:
+        r = rand () % 2;
+        if ( r == 0 ) {
+            printf ( "What a shame, keep trying\n" );
+        } else {
+                printf ( "If you have low chances of blocking with the weapon, remember you can dodgeroll to have more chances\n" );
+            }
+        break;
+    case 3:
+        r = rand () % 2;
+        if ( r == 0 ) {
+            printf ( "I see you are going to something more challenging\n" );
+        } else {
+                printf ( "Dont stress\n" );
+            }
+        break;
+    case 4:
+        r = rand () % 5;
+        switch ( r ) {
+        case 0:
+            printf ( "Why are you playing in this difficulty? Are you testing this thing or something?\n" );
+            break;
+        case 1:
+            printf ( "Rage. Quit. Go touch grass\n" );
+            break;
+        case 2:
+            printf ( "You really want to beat this game on its harder difficulty\n" );
+            break;
+        case 3:
+            printf ( "I told you this difficulty could be unbalanced, didnt I?" );
+            break;
+        case 4:
+            printf ( "Dont try this again, is too much for you\n" );
+            break;
+        }
+        break;
+    }
 }
 
 void saveRunData(playerUser player)
@@ -1261,7 +1513,7 @@ void story()
     system("pause");
 }
 
-void printfCredits()
+void printCredits()
 {
     printf ( "Project coded in 'Code::Blocks' with C\n" );
     printf ( "Game Designer\nNehuen Artaza\n\n" );
@@ -1272,5 +1524,5 @@ void printfCredits()
 void error()
 {
     printf ( "File doesnt exist or failed at open\n" );
+    system("pause");
 }
-

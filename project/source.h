@@ -9,7 +9,6 @@
 #define maxStages 3
 #define maxRooms 10
 #define scoresFile "history.bin"
-#define auxiliarFile "auxiliar.bin" //usado para mostrar las estadísticas iniciales y compararlos con las estadísticas finales
 
 /*typedef struct{
 char name[dimChar];
@@ -108,7 +107,7 @@ playerUser getItemsBonus(playerUser);   //Aplica las mejoras de los item al juga
 itemUser changeWeaponInHands(itemUser, itemUser);   //Cambia de arma
 bool healingInInventory(itemUser[], int);       //Busca que haya al menos 1 poción en el inventario
 playerUser checkAndUseHealing(playerUser);      //Muestra una por una las pociones y le pregunta al jugador si desea usarla
-
+float healOverTime(float, int);         //Da un pequeño bonificador de vida al matar un enemigo
 
 //Menus
 void mainMenu();
@@ -134,16 +133,14 @@ void showItem(itemUser);                //Muestra un item
 int orderInventory(itemUser[], int);    //Ordena el inventario y la cantidad real de items tapando los espacios libres
 void printRandomBossMessage(char[]); //Muestra un mensaje al azar de jefe
 void printGameOverMessages(int);       //Muestra un mensaje humillante según la dificultad si el jugador muere
+void printWinMessages(int);      //Muestra un mensaje de victoria según la dificultad, además de agradecer al jugador por jugar
 
 // empezado el 16/07/2023
 // terminado el --/--/----
 
 /* APARTADO DE IDEAS
-BOSS: heavy breath, anxiety, Larry Bird, insanity
-
-FALTA: crear pool de jefes, crear boss fight,  finalmente testear toda esta cosa
+FALTA: testear opcion de check inventory, testear manejo de inventario, testear esquive y bloqueo
 
 RASGOS: fuerte + x0.2 DMG, debil - x0.2 DMG, resistente +1def, piel de acero +2def, raquitico -3def, suertudo +0.1luck, desafortunado -0.1luck, maldito - 0.2luck
 aprovechador de nutrientes +0.3hpmultiplier, insuficiencia calórica - x0.3hpmultiplier
-
 */

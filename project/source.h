@@ -83,7 +83,7 @@ float damageDealedToEnemy(int, float, int, float, int);       //Retorna el daño 
 float criticalStrike(float, float, int);                //Duplica el daño o no, luego retorna el valor definitivo del daño
 float calculateHp(float, float);              //Resta a la vida el daño, sirve para el hp de jugador y hp de enemigo
 float returnHealing(int, float);             //Devuelve el valor total de la curacion
-enemyUser spawnEnemy(int, int, float);           //Crea al enemigo que el jugador debe enfrentar, dandole valores aleatorios a cada característica
+enemyUser spawnEnemy(int, int);           //Crea al enemigo que el jugador debe enfrentar, dandole valores aleatorios a cada característica
 bool dodgeroll(float, float, int);     //Decide si es efectivo el dodgeroll o no
 bool blockAttack(float, float, int);      //Decide si el bloqueo con arma es efectivo o no
 float convertDifValueToMultiplier(int);     //Transforma el dato de la dificultad en un multiplicador
@@ -96,7 +96,7 @@ itemUser generateItem();        //Decide si generar un item o una poción
 itemUser itemPool();          //Genera un item dentro de un listado de posibilidades
 itemUser generateWeapon();      //Genera un arma al azar
 void printCurrentLocation(int, int);    //Muestra el stage y sala actual
-enemyUser spawnBoss(int, int, float);  //Genera un jefe a derrotar
+enemyUser spawnBoss(int, int);  //Genera un jefe a derrotar
 bool openChest();       //Indica si el jugador abre el cofre o no
 float validLuckLimit(float);
 int validDefenseLimit(int);
@@ -108,6 +108,7 @@ itemUser changeWeaponInHands(itemUser, itemUser);   //Cambia de arma
 bool healingInInventory(itemUser[], int);       //Busca que haya al menos 1 poción en el inventario
 playerUser checkAndUseHealing(playerUser);      //Muestra una por una las pociones y le pregunta al jugador si desea usarla
 float healOverTime(float, int);         //Da un pequeño bonificador de vida al matar un enemigo
+int returnScoreFromInventory(itemUser[], int);      //Cuenta el total de score almacenado en el inventario y lo suma al finalizar la run
 
 //Menus
 void mainMenu();
@@ -139,7 +140,7 @@ void printWinMessages(int);      //Muestra un mensaje de victoria según la dific
 // terminado el --/--/----
 
 /* APARTADO DE IDEAS
-FALTA: testear opcion de check inventory, testear manejo de inventario, testear esquive y bloqueo
+FALTA: testear hipotético caso de que se llene el inventario
 
 RASGOS: fuerte + x0.2 DMG, debil - x0.2 DMG, resistente +1def, piel de acero +2def, raquitico -3def, suertudo +0.1luck, desafortunado -0.1luck, maldito - 0.2luck
 aprovechador de nutrientes +0.3hpmultiplier, insuficiencia calórica - x0.3hpmultiplier

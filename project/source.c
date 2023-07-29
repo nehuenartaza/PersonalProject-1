@@ -179,12 +179,11 @@ float validMaxHealtLimit(float playerHealth)
     return playerHealth;
 }
 
-enemyUser spawnEnemy(int stage, int difficulty, float playerLuck)
+enemyUser spawnEnemy(int stage, int difficulty)
 {
     enemyUser enemy;
     enemy.isBoss = false;
     int r = 0;
-    playerLuck = validLuckLimit(playerLuck);
     switch ( difficulty ) {
     case 1:
         enemy.DMGmultiplier = 0.9;
@@ -206,37 +205,37 @@ enemyUser spawnEnemy(int stage, int difficulty, float playerLuck)
         switch ( r ) {
         case 0:
             strcpy(enemy.enemyType, "totally normal skeleton");
-            enemy.defense = 1 *  ( ( playerLuck * (-1) ) + ( 1 * 2 ) );
+            enemy.defense = ( rand () % ( 3 - 2 + 1 ) ) + 0;
             enemy.DMG = ( rand () % ( 13 - 7 + 1 ) ) + 7;
             enemy.HP = ( float ) ( rand () % ( 28 - 23 + 1 ) ) + 23;
             break;
         case 1:
             strcpy(enemy.enemyType, "clockwork thing");
-            enemy.defense = 2 * ( ( playerLuck * (-1) ) + ( 2 * 2 ) );
+            enemy.defense = ( rand () % ( 4 - 2 + 1 ) ) + 2;
             enemy.DMG = ( rand () % ( 17 - 9 + 1 ) ) + 9;
             enemy.HP = ( float ) ( rand () % ( 43 - 29 + 1 ) ) + 29;
             break;
         case 2:
             strcpy(enemy.enemyType, "flying eye");
-            enemy.defense = 1 * ( ( playerLuck * (-1) ) + ( 1 * 2 ) );
+            enemy.defense = ( rand () % ( 2 - 0 + 1 ) ) + 0;
             enemy.DMG = ( rand () % ( 18 - 5 + 1 ) ) + 5;
             enemy.HP = ( float ) ( rand () % ( 29 - 17 + 1 ) ) + 17;
             break;
         case 3:
             strcpy(enemy.enemyType, "book head");
-            enemy.defense = 2 * ( ( playerLuck * (-1) ) + ( 2 * 2 ) );
+            enemy.defense = ( rand () % ( 3 - 2 + 1 ) ) + 2;
             enemy.DMG = ( rand () % ( 18 - 10 + 1 ) ) + 10;
             enemy.HP = ( float ) ( rand () % ( 30 - 21 + 1 ) ) + 21;
             break;
         case 4:
             strcpy(enemy.enemyType, "ant");
-            enemy.defense = 0 * ( ( playerLuck * (-1) ) + ( 0 * 2 ) );
+            enemy.defense = ( rand () % ( 1 - 0 + 1 ) ) + 0;
             enemy.DMG = ( rand () % ( 15 - 9 + 1 ) ) + 9;
             enemy.HP = ( float ) ( rand () % ( 12 - 9 + 1 ) ) + 9;
             break;
         case 5:
             strcpy(enemy.enemyType, "possesed radio");
-            enemy.defense = 1 * ( ( playerLuck * (-1) ) + ( 1 * 2 ) );
+            enemy.defense = ( rand () % ( 2 - 1 + 1 ) ) + 1;
             enemy.DMG = ( rand () % ( 24 - 18 + 1 ) ) + 18;
             enemy.HP = ( float ) ( rand () % ( 29 - 23 + 1 ) ) + 23;
             break;
@@ -247,37 +246,37 @@ enemyUser spawnEnemy(int stage, int difficulty, float playerLuck)
         switch ( r ) {
         case 0:
             strcpy(enemy.enemyType, "jellyfish");
-            enemy.defense = 0 * ( ( playerLuck * (-1) ) + ( 0 * 2 ) );
+            enemy.defense = ( rand () % ( 1 - 0 + 1 ) ) + 0;
             enemy.DMG = ( rand () % ( 28 - 20 + 1 ) ) + 20;
             enemy.HP = ( float ) ( rand () % ( 51 - 48 + 1 ) ) + 48;
             break;
         case 1:
             strcpy(enemy.enemyType, "diamond elemental");
-            enemy.defense = 6 * ( ( playerLuck * (-1) ) + ( 6 * 2 ) );
+            enemy.defense = ( rand () % ( 6 - 5 + 1 ) ) + 5;
             enemy.DMG = ( rand () % ( 29 - 26 + 1 ) ) + 26;
             enemy.HP = ( float ) ( rand () % ( 78 - 69 + 1 ) ) + 69;
             break;
         case 2:
             strcpy(enemy.enemyType, "pirate");
-            enemy.defense = 2 * ( ( playerLuck * (-1) ) + ( 2 * 2 ) );
+            enemy.defense = ( rand () % ( 2 - 1 + 1 ) ) + 1;
             enemy.DMG = ( rand () % ( 33 - 27 + 1 ) ) + 27;
             enemy.HP = ( float ) ( rand () % ( 60 - 50 + 1 ) ) + 50;
             break;
         case 3:
             strcpy(enemy.enemyType, "gargoile");
-            enemy.defense = 6 * ( ( playerLuck * (-1) ) + ( 6 * 2 ) );
+            enemy.defense = ( rand () % ( 6 - 4 + 1 ) ) + 4;
             enemy.DMG = ( rand () % ( 33 - 31 + 1 ) ) + 31;
             enemy.HP = ( float ) ( rand () % ( 73 - 68 + 1 ) ) + 68;
             break;
         case 4:
             strcpy(enemy.enemyType, "armored snowball");
-            enemy.defense = 4 * ( ( playerLuck * (-1) ) + ( 4 * 2 ) );
+            enemy.defense = ( rand () % ( 4 - 2 + 1 ) ) + 2;
             enemy.DMG = ( rand () % ( 39 - 33 + 1 ) ) + 33;
             enemy.HP = ( float ) ( rand () % ( 26 - 21 + 1 ) ) + 21;
             break;
         case 5:
             strcpy(enemy.enemyType, "chess tower");
-            enemy.defense = 3 * ( ( playerLuck * (-1) ) + ( 3 * 2 ) );
+            enemy.defense = ( rand () % ( 3 - 2 + 1 ) ) + 2;
             enemy.DMG = ( rand () % ( 43 - 38 + 1 ) ) + 38;
             enemy.HP = ( float ) ( rand () % ( 79 - 56 + 1 ) ) + 56;
             break;
@@ -288,37 +287,37 @@ enemyUser spawnEnemy(int stage, int difficulty, float playerLuck)
         switch ( r ) {
         case 0:
             strcpy(enemy.enemyType, "fallen star");
-            enemy.defense = 4 * ( ( playerLuck * (-1) ) + ( 4 * 2 ) );
+            enemy.defense = ( rand () % ( 4 - 2 + 1 ) ) + 2;
             enemy.DMG = ( rand () % ( 27 - 19 + 1 ) ) + 19;
             enemy.HP = ( float ) ( rand () % ( 14 - 10 + 1 ) ) + 10;
             break;
         case 1:
             strcpy(enemy.enemyType, "undead armor");
-            enemy.defense = 5 * ( ( playerLuck * (-1) ) + ( 5 * 2 ) );
+            enemy.defense = ( rand () % ( 5 - 4 + 1 ) ) + 4;
             enemy.DMG = ( rand () % ( 26 - 23 + 1 ) ) + 23;
             enemy.HP = ( float ) ( rand () % ( 60 - 57 + 1 ) ) + 57;
             break;
         case 2:
             strcpy(enemy.enemyType, "water mage");
-            enemy.defense = 3 * ( ( playerLuck * (-1) ) + ( 3 * 2 ) );
+            enemy.defense = ( rand () % ( 4 - 3 + 1 ) ) + 3;
             enemy.DMG = ( rand () % ( 47 - 40 + 1 ) ) + 40;
             enemy.HP = ( float ) ( rand () % ( 73 - 68 + 1 ) ) + 68;
             break;
         case 3:
             strcpy(enemy.enemyType, "corpse");
-            enemy.defense = 2 * ( ( playerLuck * (-1) ) + ( 2 * 2 ) );
+            enemy.defense = ( rand () % ( 2 - 1 + 1 ) ) + 1;
             enemy.DMG = ( rand () % ( 37 - 26 + 1 ) ) + 26;
             enemy.HP = ( float ) ( rand () % ( 69 - 66 + 1 ) ) + 66;
             break;
         case 4:
             strcpy(enemy.enemyType, "hanged woman");
-            enemy.defense = 2 * ( ( playerLuck * (-1) ) + ( 2 * 2 ) );
+            enemy.defense = ( rand () % ( 3 - 2 + 1 ) ) + 2;
             enemy.DMG = ( rand () % ( 39 - 28 + 1 ) ) + 28;
             enemy.HP = ( float ) ( rand () % ( 44 - 40 + 1 ) ) + 40;
             break;
         case 5:
             strcpy(enemy.enemyType, "lightning core");
-            enemy.defense = 1 * ( ( playerLuck * (-1) ) + ( 1 * 2 ) );
+            enemy.defense = ( rand () % ( 3 - 1 + 1 ) ) + 1;
             enemy.DMG = ( rand () % ( 68 - 64 + 1 ) ) + 64;
             enemy.HP = ( float ) ( rand () % ( 23 - 20 + 1 ) ) + 20;
             break;
@@ -328,12 +327,11 @@ enemyUser spawnEnemy(int stage, int difficulty, float playerLuck)
     return enemy;
 }
 
-enemyUser spawnBoss(int stage, int difficulty, float playerLuck)
+enemyUser spawnBoss(int stage, int difficulty)
 {
     enemyUser boss;
     boss.isBoss = true;
     int r = 0;
-    playerLuck = validLuckLimit(playerLuck);
     switch ( difficulty ) {
     case 1:
         boss.DMGmultiplier = 0.9;
@@ -355,19 +353,19 @@ enemyUser spawnBoss(int stage, int difficulty, float playerLuck)
         switch ( r ) {
         case 0:
             strcpy(boss.enemyType, "Elif the big colossus");
-            boss.defense = 5 * ( ( playerLuck * (-5) ) + ( 5 * 2 ) );
+            boss.defense = ( rand () % ( 5 - 2 + 1 ) ) + 2;;
             boss.DMG = ( rand () % ( 53 - 48 + 1 ) ) + 48;
             boss.HP = ( float ) ( rand () % ( 90 - 87 + 1 ) ) + 87;
             break;
         case 1:
             strcpy(boss.enemyType, "Phantasmal Seeker");
-            boss.defense = 2 * ( ( playerLuck * (-2) ) + ( 2 * 2 ) );
+            boss.defense = ( rand () % ( 3 - 2 + 1 ) ) + 2;
             boss.DMG = ( rand () % ( 51 - 47 + 1 ) ) + 47;
             boss.HP = ( float ) ( rand () % ( 113 - 110 + 1 ) ) + 110;
             break;
         case 2:
             strcpy(boss.enemyType, "Anxiety");
-            boss.defense = 3 * ( ( playerLuck * (-3) ) + ( 3 * 2 ) );
+            boss.defense = ( rand () % ( 5 - 3 + 1 ) ) + 3;
             boss.DMG = ( rand () % ( 50 - 46 + 1 ) ) + 46;
             boss.HP = ( float ) ( rand () % ( 105 - 95 + 1 ) ) + 95;
             break;
@@ -378,19 +376,19 @@ enemyUser spawnBoss(int stage, int difficulty, float playerLuck)
         switch ( r ) {
         case 0:
             strcpy(boss.enemyType, "Enchanted Runic Dress");
-            boss.defense = 4 * ( ( playerLuck * (-4) ) + ( 4 * 2 ) );
+            boss.defense = ( rand () % ( 5 - 4 + 1 ) ) + 4;
             boss.DMG = ( rand () % ( 59 - 43 + 1 ) ) + 43;
             boss.HP = ( float ) ( rand () % ( 116 - 110 + 1 ) ) + 110;
             break;
         case 1:
             strcpy(boss.enemyType, "Bullet Hell");
-            boss.defense = 3 * ( ( playerLuck * (-3) ) + ( 3 * 2 ) );
+            boss.defense = ( rand () % ( 5 - 4 + 1 ) ) + 4;
             boss.DMG = ( rand () % ( 53 - 46 + 1 ) ) + 46;
             boss.HP = ( float ) ( rand () % ( 120 - 100 + 1 ) ) + 100;
             break;
         case 2:
             strcpy(boss.enemyType, "Kenopsia");
-            boss.defense = 5 * ( ( playerLuck * (-5) ) + ( 5 * 2 ) );
+            boss.defense = ( rand () % ( 6 - 4 + 1 ) ) + 4;
             boss.DMG = ( rand () % ( 56 - 49 + 1 ) ) + 49;
             boss.HP = ( float ) ( rand () % ( 107 - 100 + 1 ) ) + 100;
             break;
@@ -398,7 +396,7 @@ enemyUser spawnBoss(int stage, int difficulty, float playerLuck)
         break;
     case 3:
         strcpy(boss.enemyType, "The Powerful");
-        boss.defense = 7 * ( ( playerLuck * (-7) ) + ( 7 * 2 ) );
+        boss.defense = ( rand () % ( 7 - 6 + 1 ) ) + 6;
         boss.DMG = ( rand () % ( 59 - 57 + 1 ) ) + 57;
         boss.HP = ( float ) ( rand () % ( 175 - 160 + 1 ) ) + 160;
         break;
@@ -461,6 +459,7 @@ void showAllStats(playerUser player)
     showHands(player.hands);
     printf ( "Final Inventory: %d items\n", player.amountItems );
     showPlayerInventory(player.inventory, player.amountItems);
+    printf ( "--------------------------------\n" );
     //showPlayerTraits(player.traits, player.amountTraits);
     printf ( "Difficulty: ");
     switch ( player.difficulty ) {
@@ -517,7 +516,7 @@ bool willDodgeroll()
     do {
         printf ( "are you sure you want to dodgeroll? 1-yes 0-No\n" );
         scanf ( "%d", &confirm );
-    } while ( confirm != 1 || confirm != 0 );
+    } while ( confirm != 1 && confirm != 0 );
     if ( confirm == 1 ) {
         will = true;
     }
@@ -531,7 +530,7 @@ bool willBlock()
     do {
         printf ( "are you sure you want to block? 1-yes 0-No\n" );
         scanf ( "%d", &confirm );
-    } while ( confirm != 1 || confirm != 0 );
+    } while ( confirm != 1 && confirm != 0 );
     if ( confirm == 1 ) {
         will = true;
     }
@@ -990,7 +989,7 @@ void newRun()
         for ( int j = 0; j < maxRooms; j++ ) {
             player.room = j + 1;
             printCurrentLocation(player.stage, player.room);
-            enemy = spawnEnemy(player.stage, player.difficulty, player.luck);
+            enemy = spawnEnemy(player.stage, player.difficulty);
             printRandomEnemyMessage(enemy.enemyType);
             do {
                 showBasicPlayerStats(player);
@@ -1095,13 +1094,13 @@ void newRun()
             if ( player.amountItems != inventoryLimit && item.isItem && willOpen ) {    //se agrega item al inventario si aún no se llenó
                 player.inventory[player.amountItems] = item;
                 player.amountItems++;
-                getItemsBonus(player);
+                player = getItemsBonus(player);
             } else if ( player.amountItems == inventoryLimit && item.isItem && willOpen ) {     //se consulta en caso de que el inventario esté lleno
                     do {
                         printf ( "1- Discard item from inventory\n" );
                         printf ( "2- Discard item founded\n" );
                         scanf ( "%d", &action );
-                        if ( action != 1 || action != 2 ) {
+                        if ( action != 1 && action != 2 ) {
                             system("cls");
                         }
                     } while ( action <= 0 || action >= 3 );
@@ -1109,7 +1108,7 @@ void newRun()
                         player.amountItems = discardItemFromInventory(player);
                         player.inventory[player.amountItems] = item;
                         player.amountItems++;
-                        getItemsBonus(player);
+                        player = getItemsBonus(player);
                     }
                 }
         }   //hasta completar 10 salas
@@ -1118,11 +1117,13 @@ void newRun()
             strcpy(player.killedBy, enemy.enemyType);
             break;
         }
-        enemy = spawnBoss(player.stage, player.difficulty, player.luck);
+        enemy = spawnBoss(player.stage, player.difficulty);
         printRandomBossMessage(enemy.enemyType);
         do {
             showBasicPlayerStats(player);
             showEnemyStats(enemy);
+            showHands(player.hands);
+            printf ("\n");
             action = doAction();
             switch ( action ) {
             case 1:     //si jugador ataca
@@ -1173,7 +1174,7 @@ void newRun()
                 system("pause");
                 player.score = player.score + 50;
             } else if ( !success && enemy.HP > 0 ) {
-                    printf ( "You took %.2f damage", damage );
+                    printf ( "You took %.2f damage\n", damage );
                     player.HP = ( float ) player.HP - damage;
                     player.DMGtaken = ( float ) player.DMGtaken + damage;
                     system("pause");
@@ -1204,7 +1205,9 @@ void newRun()
             printGameOverMessages(player.difficulty);
         }
     player.amountItems = orderInventory(player.inventory, player.amountItems);
-
+    if ( player.amountItems != 0 ) {
+        player.score = player.score + returnScoreFromInventory(player.inventory, player.amountItems);
+    }
     askNickname(player.nickname);
     showAllStats(player);
     saveRunData(player);
@@ -1262,6 +1265,17 @@ playerUser checkAndUseHealing(playerUser player)
         }
     }
     return player;
+}
+
+int returnScoreFromInventory(itemUser inv[], int totalItems)
+{
+    int scoreCount = 0;
+    for ( int i = 0; i < totalItems; i++ ) {
+        if ( !inv[i].itemIsDiscard && inv[i].scoreBonus != 0 ) {
+            scoreCount = scoreCount + inv[i].scoreBonus;
+        }
+    }
+    return scoreCount;
 }
 
 itemUser changeWeaponInHands(itemUser hands, itemUser newWeapon)
@@ -1325,7 +1339,7 @@ void showItem(itemUser item)
         printf ( "Luck bonus: %.2f\n",  item.luckBonus );
     }
     if ( item.scoreBonus != 0 ) {
-        printf ( "Score bonus: %d\n\n", item.scoreBonus );
+        printf ( "Score bonus: %d\n", item.scoreBonus );
     }
     if ( item.DMGmultiplierBonus != 0 ) {
         printf ( "DMG multiplier: %.2f\n\n", item.DMGmultiplierBonus );
@@ -1364,7 +1378,7 @@ int orderInventory(itemUser inv[], int totalItems)
                     inv[j] = inv[j+1];
                 }
                 totalItems--;
-            } while ( inv[i].itemIsDiscard );   //en caso de que haya 2 o mas items consecutivos con itemIsDiscard = true
+            } while ( inv[i].itemIsDiscard && totalItems != realTotalItems );   //en caso de que haya 2 o mas items consecutivos con itemIsDiscard = true
         }
     }
     return realTotalItems;
@@ -1641,7 +1655,7 @@ void saveRunData(playerUser player)
     if ( destiny != NULL ) {
         fwrite(&player, sizeof(playerUser), 1, destiny);
         fclose(destiny);
-        printf ( "Data saved\n" );
+        printf ( "--Data saved--\n" );
         system("pause");
     } else {
             error();
@@ -1726,3 +1740,4 @@ void error()
     printf ( "File doesnt exist or failed at open\n" );
     system("pause");
 }
+

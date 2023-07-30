@@ -4,6 +4,8 @@ Primer proyecto personal luego de 6 meses aprendiendo y programando en C desde 0
 cosa, es malo y básico como para ser llamado videojuego, en fin, llamalo como vos quieras.
 
 
+
+
 NOTA 1: el algoritmo que pregunta si descartar un item cuando el inventario está lleno puede contener bugs.
 
 NOTA 2: se contempló el hecho de beber las pociones apenas son encontradas en los cofres, no obstante quería terminar el desarrollo de esta cosa de una vez

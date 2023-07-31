@@ -141,10 +141,3 @@ void printHistory();                                              //Muestra toda
 void printHiScore();                                        //Busca el jugador con el HiScore de todos y lo muestra
 void saveRunData(playerUser);                   //Guarda los datos del jugador luego de la partida
 void error();                                                       //Mensaje de error de archivo
-
-// empezado el 16/07/2023
-// terminado el --/--/----
-
-/*
-FALTA: testear hipotético caso de que se llene el inventario
-*/

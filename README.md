@@ -13,3 +13,7 @@ y haber implementado eso hubiera llevado un buen rato para pulirlo lo máximo po
 para tomar todas las pociones para tener el máximo ingreso de vida posible.
 
 NOTA 3: esta cosa está desbalanceada a propósito, su propósito es ver de lo que soy capáz de hacer yo solo, no ser divertido.
+
+
+started 16/07/2023
+finished 29/07/2023
